@@ -30,14 +30,17 @@ public class SuperSnakeBehaviorApplication {
 		private BodyBuilder bodyBuilder;
 		private Libgdx2dCameraTransformImpl libgdx2dCamera;
 		private JointBuilder jointBuilder;
+
 		private Body bodyA;
+
+		private Body[] bodies;
 
 		@Override
 		public void create() {
 			super.create();
 			box2dDebugRenderer = new Box2DDebugRenderer();
 
-			libgdx2dCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.5f);
+			libgdx2dCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() * 0.35f, Gdx.graphics.getHeight() * 0.5f);
 			libgdx2dCamera.zoom(48f);
 
 			world = new com.badlogic.gdx.physics.box2d.World(new Vector2(), false);
@@ -52,57 +55,23 @@ public class SuperSnakeBehaviorApplication {
 					.type(BodyType.DynamicBody) //
 					.build();
 
-			jointBuilder = new JointBuilder(world);
+			bodyCount = 25;
+			bodies = new Body[bodyCount + 1];
 
-			Body first = bodyA;
+			bodies[0] = bodyA;
 
-			for (int i = 0; i < 70; i++) {
+			for (int i = 1; i < bodyCount; i++) {
 
-				Vector2 p = first.getPosition();
-
-				Body bodyPart = bodyBuilder //
+				bodies[i] = bodyBuilder //
 						.fixture(bodyBuilder.fixtureDefBuilder() //
 								.circleShape(0.1f) //
-						) //
-						.mass(0.05f) //
+								.sensor() //
+								.maskBits((short) 0x00) //
+								.friction(0f)) //
 						.angle(0f) //
-						.position(p.x - 0.05f - 0.125f, 0f) //
+						.position(0f, 0f) //
 						.type(BodyType.DynamicBody) //
-						.linearDamping(1f) //
-//						.angularDamping(1f) //
 						.build();
-
-				// bodyPart.setTransform(p.x - 0.15f - 0.25f, 0f, 0f);
-
-				jointBuilder.distanceJoint() //
-						.dampingRatio(1f) //
-//						.frequencyHz(1f) //
-						.collideConnected(false) //
-						.length(first == bodyA ? 0.27f : 0.05f) //
-						.bodyA(first)//
-						.bodyB(bodyPart) //
-						.build();
-
-				// RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
-				// revoluteJointDef.bodyA = first;
-				// revoluteJointDef.bodyB = bodyPart;
-				// revoluteJointDef.collideConnected = false;
-				// revoluteJointDef.enableLimit = true;
-				// revoluteJointDef.maxMotorTorque = 1000f;
-				// revoluteJointDef.enableMotor = true;
-				// revoluteJointDef.motorSpeed = 10f;
-				// revoluteJointDef.lowerAngle = -180f * MathUtils.degreesToRadians;
-				// revoluteJointDef.upperAngle = 180f * MathUtils.degreesToRadians;
-				//
-				// revoluteJointDef.initialize(first, bodyPart, new Vector2(p.x - 0.2f, p.y));
-
-				// revoluteJointDef.localAnchorA.set(-0.2f, 0f);
-				// // revoluteJointDef.localAnchorB.set(0.5f, 0f);
-				// revoluteJointDef.localAnchorB.set(first == bodyA ? 0.75f : 0.5f, 0f);
-
-				// world.createJoint(revoluteJointDef);
-
-				first = bodyPart;
 
 			}
 
@@ -110,6 +79,12 @@ public class SuperSnakeBehaviorApplication {
 
 		Vector2 position = new Vector2();
 		Vector2 tmp = new Vector2();
+		private int bodyCount;
+
+		private float displacementY(int elementNumber, float elementDistance, float maxDisplacement, float frameCount) {
+			float radians = (float) Math.toRadians((elementNumber * elementDistance) + frameCount / 10f);
+			return (float) (maxDisplacement * Math.sin(radians));
+		}
 
 		@Override
 		public void render() {
@@ -118,35 +93,70 @@ public class SuperSnakeBehaviorApplication {
 			GlobalTime.setDelta(Gdx.graphics.getDeltaTime());
 
 			world.step(0.1f, 3, 3);
-			box2dDebugRenderer.render(world, libgdx2dCamera.getCombinedMatrix());
 
 			float y = Gdx.graphics.getHeight() - Gdx.input.getY();
 			position.set(0f, y);
 
 			libgdx2dCamera.unproject(position);
 
-			Vector2 bodyPosition = bodyA.getPosition();
+			Vector2 previousPartPosition = bodies[0].getPosition();
+			float previousPartAngle = bodies[0].getAngle();
+
+			float x = previousPartPosition.x;
+
+			for (int i = 1; i < bodyCount; i++) {
+				Body bodyPart = bodies[i];
+
+				// float displacementY = displacementY(i, 0f, 0.5f, x);
+				// MathUtils.sin(rad)
+				float amplitud = 0.02f * i;
+
+				if (amplitud > 0.15f)
+					amplitud = 0.15f;
+				
+				if (Math.abs(bodyA.getLinearVelocity().y) > 1f)
+					amplitud *= 1f / (Math.abs(bodyA.getLinearVelocity().y) * 10f);
+				
+				
+				float displacementY = (float) Math.sin(x * 0.5f + i) * amplitud;
+
+				// if (Math.abs(bodyA.getLinearVelocity().y) > 0.1f)
+				// displacementY = 0f;
+
+				Vector2 currentPartPosition = bodyPart.getPosition();
+				float currentPartAngle = bodyPart.getAngle();
+
+				bodyPart.setTransform(x - 0.2f * i, previousPartPosition.y + displacementY, previousPartAngle);
+				bodyPart.setLinearVelocity(0f, 0f);
+				bodyPart.setAngularVelocity(0f);
+
+				previousPartPosition = currentPartPosition;
+				previousPartAngle = currentPartAngle;
+			}
 
 			bodyA.applyForceToCenter(2f, 0f);
 			if (Gdx.input.isKeyPressed(Keys.UP)) {
-				bodyA.applyForceToCenter(0f, 0.5f);
+				bodyA.applyForceToCenter(0f, 2f);
 			} else if (Gdx.input.isKeyPressed(Keys.DOWN)) {
-				bodyA.applyForceToCenter(0f, -0.5f);
+				bodyA.applyForceToCenter(0f, -2f);
 			}
 
-			// Vector2 linearVelocity = bodyA.getLinearVelocity();
-			// float speed = 5f;
-			//
-			// if (linearVelocity.len() > speed) {
-			// float v = speed - linearVelocity.len();
-			//
-			// tmp.set(linearVelocity).nor();
-			// tmp.mul(v * bodyA.getMass() / GlobalTime.getDelta());
-			//
-			// bodyA.applyForceToCenter(tmp);
-			// }
+			Vector2 linearVelocity = bodyA.getLinearVelocity();
 
-			libgdx2dCamera.move(bodyPosition.x, 0f);
+			float speed = linearVelocity.len();
+			float maxSpeed = 5f;
+
+			if (speed > maxSpeed) {
+				float factor = maxSpeed / speed;
+				linearVelocity.mul(factor);
+				bodyA.setLinearVelocity(linearVelocity);
+			}
+
+			previousPartPosition = bodyA.getPosition();
+
+			libgdx2dCamera.move(previousPartPosition.x, 0f);
+
+			box2dDebugRenderer.render(world, libgdx2dCamera.getCombinedMatrix());
 		}
 
 	}
