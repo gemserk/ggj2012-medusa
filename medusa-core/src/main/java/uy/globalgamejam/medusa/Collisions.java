@@ -10,5 +10,7 @@ public class Collisions {
 	public static final short Item = 0x04;
 
 	public static final short Tail = 0x08;
+	public static final short Enemy = 0x10;
+	
 
 }

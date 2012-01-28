@@ -1,13 +1,11 @@
 package uy.globalgamejam.medusa;
 
-import org.w3c.dom.Element;
-
 import uy.globalgamejam.medusa.components.Components;
 import uy.globalgamejam.medusa.components.Controller;
 import uy.globalgamejam.medusa.components.TailComponent;
 import uy.globalgamejam.medusa.tags.Tags;
 import uy.globalgamejam.medusa.templates.AttachedCameraTemplate;
-import uy.globalgamejam.medusa.templates.ItemSpawnerTemplate;
+import uy.globalgamejam.medusa.templates.BasicEnemyTemplate;
 import uy.globalgamejam.medusa.templates.ObstacleSpawnerTemplate2;
 import uy.globalgamejam.medusa.templates.SnakeCharacterTemplate;
 import uy.globalgamejam.medusa.templates.TailPartTemplate;
@@ -53,13 +51,9 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
-import com.gemserk.commons.gdx.graphics.NeatTriangulator;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
-import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
 import com.gemserk.commons.reflection.Injector;
-import com.gemserk.commons.svg.SvgLayerProcessor;
-import com.gemserk.commons.svg.inkscape.SvgPath;
 import com.gemserk.commons.text.CustomDecimalFormat;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 
@@ -89,7 +83,7 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void init() {
-		Injector injector = this.injector.createChildInjector();
+		final Injector injector = this.injector.createChildInjector();
 
 		synchronizer = new Synchronizer();
 
@@ -99,7 +93,7 @@ public class PlayGameState extends GameStateImpl {
 		normalCamera.zoom(1f);
 
 		float scale = 64f;
-		
+
 		worldCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() * 0.15f, Gdx.graphics.getHeight() * 0.5f);
 		worldCamera.zoom(scale * gameScale);
 
@@ -113,7 +107,7 @@ public class PlayGameState extends GameStateImpl {
 
 		physicsWorld = new com.badlogic.gdx.physics.box2d.World(new Vector2(0f, 0f), false);
 
-		EntityFactory entityFactory = new EntityFactoryImpl(scene.getWorld());
+		final EntityFactory entityFactory = new EntityFactoryImpl(scene.getWorld());
 		EventManager eventManager = new EventManagerImpl();
 
 		// lighting stuff
@@ -165,7 +159,7 @@ public class PlayGameState extends GameStateImpl {
 				.put("camera", worldCamera) //
 				);
 
-		entityFactory.instantiate(injector.getInstance(ItemSpawnerTemplate.class));
+//		entityFactory.instantiate(injector.getInstance(ItemSpawnerTemplate.class));
 
 		entityFactory.instantiate(injector.getInstance(AttachedCameraTemplate.class), new ParametersWrapper() //
 				.put("libgdx2dCamera", worldCamera) //
@@ -230,20 +224,30 @@ public class PlayGameState extends GameStateImpl {
 		customDecimalFormat = new CustomDecimalFormat(10);
 		score = 0L;
 
-		SvgLayerProcessor boundsLayerProcessor = new SvgLayerProcessor("obstacles") {
-
-			Triangulator triangulator;
-
+		entityFactory.instantiate(new EntityTemplateImpl() {
 			@Override
-			protected void handlePathObject(SvgPath svgPath, Element element, Vector2[] vertices) {
-				if (!element.hasAttribute("tileId"))
-					return;
-				triangulator = new NeatTriangulator();
-				for (int i = 0; i < vertices.length; i++)
-					triangulator.addPolyPoint(vertices[i].x, vertices[i].y);
+			public void apply(Entity entity) {
+				entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
+					final Vector2 position = new Vector2();
 
+					@Override
+					public void update(World world, Entity e) {
+						if (!Gdx.input.justTouched())
+							return;
+						
+						int x = Gdx.input.getX();
+						int y = Gdx.graphics.getHeight() - Gdx.input.getY();
+
+						position.set(x, y);
+						worldCamera.unproject(position);
+						
+						entityFactory.instantiate(injector.getInstance(BasicEnemyTemplate.class), //
+								new ParametersWrapper().put("spatial", new SpatialImpl(position.x, position.y)) //
+								);
+					}
+				}));
 			}
-		};
+		});
 
 	}
 
