@@ -33,4 +33,11 @@ public class Components extends com.gemserk.commons.artemis.components.Component
 	public static TailComponent getTailComponent(Entity e) {
 		return tailComponentClass.cast(e.getComponent(tailComponentType));
 	}
+	
+	public static final Class<TailPartComponent> tailPartComponentClass = TailPartComponent.class;
+	public static final ComponentType tailPartComponentType = ComponentTypeManager.getTypeFor(tailPartComponentClass);
+
+	public static TailPartComponent getTailPartComponent(Entity e) {
+		return tailPartComponentClass.cast(e.getComponent(tailPartComponentType));
+	}
 }

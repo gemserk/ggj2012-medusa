@@ -60,14 +60,16 @@ public class BasicEnemyTemplate extends EntityTemplateImpl {
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.sensor() //
 						.categoryBits(Collisions.Enemy) //
-						.maskBits((short)(Collisions.MainCharacter & Collisions.Tail)) //
+						.maskBits((short)(Collisions.MainCharacter | Collisions.Tail)) //
 						.circleShape(0.25f) //
 				) //
-				.position(spatial.getX(), spatial.getY()) //
+				.position(0f, 0f) //
 				.type(BodyType.DynamicBody) //
-				.angle(spatial.getAngle()) //
+				.angle(0f) //
 				.userData(entity) //
 				.build();
+		
+		body.setTransform(spatial.getX(), spatial.getY(), spatial.getAngle());
 
 		entity.addComponent(new PhysicsComponent(body));
 		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, spatial)));
