@@ -23,10 +23,10 @@ public class EngineScript extends ScriptJavaImpl {
 		PhysicsComponent physicsComponent = Components.getPhysicsComponent(e);
 		Body body = physicsComponent.getBody();
 
-		if (body.getLinearVelocity().y > engineComponent.maxSpeed)
+		if (body.getLinearVelocity().x > engineComponent.maxSpeed)
 			return;
 
-		force.set(0f, engineComponent.speed);
+		force.set(engineComponent.speed, 0f );
 
 		body.applyForceToCenter(force);
 	}

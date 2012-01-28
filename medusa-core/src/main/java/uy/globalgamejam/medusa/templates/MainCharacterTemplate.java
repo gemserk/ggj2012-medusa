@@ -68,34 +68,35 @@ public class MainCharacterTemplate extends EntityTemplateImpl {
 			PhysicsComponent physicsComponent = Components.getPhysicsComponent(e);
 			Body body = physicsComponent.getBody();
 
-			if (Math.abs(spatial.getX() - controller.desiredX) < 0.5f) {
-				spatial.setPosition(controller.desiredX, spatial.getY());
+			
+			if (Math.abs(spatial.getY() - controller.desiredY) < 0.5f) {
+				spatial.setPosition(spatial.getX(),controller.desiredY);
 				Vector2 linearVelocity = body.getLinearVelocity();
-				linearVelocity.x = 0f;
+				linearVelocity.y = 0f;
 				body.setLinearVelocity(linearVelocity);
 				return;
 			}
 
-			float direction = Math.signum(controller.desiredX - spatial.getX());
+			float direction = Math.signum(controller.desiredY - spatial.getY());
 
-			if (Math.signum(body.getLinearVelocity().x) != direction) {
-				body.setLinearVelocity(0f, body.getLinearVelocity().y);
+			if (Math.signum(body.getLinearVelocity().y) != direction) {
+				body.setLinearVelocity(body.getLinearVelocity().x, 0f);
 			}
 
-			float newX = spatial.getX() + body.getLinearVelocity().x * GlobalTime.getDelta() * direction;
+			float newY = spatial.getY() + body.getLinearVelocity().y * GlobalTime.getDelta() * direction;
 
-			if (newX > controller.desiredX && direction > 0) {
-				newX = controller.desiredX;
+			if (newY > controller.desiredY && direction > 0) {
+				newY = controller.desiredY;
 				return;
 			}
 
-			if (newX < controller.desiredX && direction < 0) {
-				newX = controller.desiredX;
+			if (newY < controller.desiredY && direction < 0) {
+				newY = controller.desiredY;
 				return;
 			}
 
-			force.set(direction, 0f);
-			force.mul(1000f);
+			force.set(0,direction);
+			force.mul(2000f);
 
 			body.applyForceToCenter(force);
 		}

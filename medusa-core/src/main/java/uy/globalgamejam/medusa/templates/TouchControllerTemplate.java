@@ -26,7 +26,7 @@ public class TouchControllerTemplate extends EntityTemplateImpl {
 
 		final Vector2 position = new Vector2();
 
-		AnalogInputMonitor xCoordinateMonitor;
+		AnalogInputMonitor yCoordinateMonitor;
 
 		Libgdx2dCamera camera;
 
@@ -36,12 +36,12 @@ public class TouchControllerTemplate extends EntityTemplateImpl {
 
 		@Override
 		public void init(World world, Entity e) {
-			xCoordinateMonitor = LibgdxInputMappingBuilder.pointerXCoordinateMonitor(Gdx.input, 0);
+			yCoordinateMonitor = LibgdxInputMappingBuilder.pointerYCoordinateMonitor(Gdx.input, 0);
 		}
 
 		@Override
 		public void update(World world, Entity e) {
-			xCoordinateMonitor.update();
+			yCoordinateMonitor.update();
 
 			ControllerComponent controllerComponent = Components.getControllerComponent(e);
 
@@ -51,12 +51,12 @@ public class TouchControllerTemplate extends EntityTemplateImpl {
 			//
 			// SpatialComponent mainCharacterSpatialComponent = Components.getSpatialComponent(mainCharacter);
 			// Spatial spatial = mainCharacterSpatialComponent.getSpatial();
-
-			position.set(xCoordinateMonitor.getValue(), 0f);
-
+			position.set(0f, Gdx.graphics.getHeight() - yCoordinateMonitor.getValue());
+			System.out.println("CONTROL: " + yCoordinateMonitor.getValue());
+			
 			camera.unproject(position);
 
-			controllerComponent.controller.desiredX = position.x;
+			controllerComponent.controller.desiredY = position.y;
 
 			// // camera.project(position);
 			//

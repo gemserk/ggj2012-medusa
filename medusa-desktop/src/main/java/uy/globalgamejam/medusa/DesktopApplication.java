@@ -16,8 +16,8 @@ public class DesktopApplication {
 
 	private static class Arguments {
 
-		int width = 480;
-		int height = 800;
+		int width = 1024;
+		int height = 480;
 
 		public void parse(String[] argv) {
 			if (argv.length == 0)
@@ -47,7 +47,7 @@ public class DesktopApplication {
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
-		config.title = "Gemserk's Codename: UFO";
+		config.title = "Global Game Jam 2012 - Medusa";
 		config.width = arguments.width;
 		config.height = arguments.height;
 		config.fullscreen = false;

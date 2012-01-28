@@ -133,9 +133,9 @@ public class Game extends ApplicationListenerGameStateBasedImpl {
 
 		shapeRenderer.setProjectionMatrix(loggerCamera.getCombinedMatrix());
 
-		renderTimeLoggerGraph(Color.RED, deltaTimeLogger, 1f / 60f, 10f * 1000f, Gdx.graphics.getHeight() * 0.8f);
-		// renderTimeLoggerGraph(Color.ORANGE, averageDeltaTimeLogger, 1f / 60f, 10f * 1000f, Gdx.graphics.getHeight() * 0.5f);
-		renderTimeLoggerGraph(Color.GREEN, accumulatorLogger, 0f, 10f, Gdx.graphics.getHeight() * 0.3f);
+//		renderTimeLoggerGraph(Color.RED, deltaTimeLogger, 1f / 60f, 10f * 1000f, Gdx.graphics.getHeight() * 0.8f);
+//		// renderTimeLoggerGraph(Color.ORANGE, averageDeltaTimeLogger, 1f / 60f, 10f * 1000f, Gdx.graphics.getHeight() * 0.5f);
+//		renderTimeLoggerGraph(Color.GREEN, accumulatorLogger, 0f, 10f, Gdx.graphics.getHeight() * 0.3f);
 
 		averageDeltaTimeLogger.update();
 		deltaTimeLogger.update();
