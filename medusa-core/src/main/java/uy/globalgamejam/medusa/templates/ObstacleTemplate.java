@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import uy.globalgamejam.medusa.Collisions;
 import uy.globalgamejam.medusa.resources.GameResources;
-
-
 import aurelienribon.box2deditor.FixtureAtlas;
 
 import com.artemis.Entity;
@@ -64,7 +62,7 @@ public class ObstacleTemplate extends EntityTemplateImpl {
 		FixtureDef obstacleFixtureDef = bodyBuilder.fixtureDefBuilder() //
 				.categoryBits(Collisions.Obstacle) //
 				.maskBits(Collisions.All) //
-				.restitution(0f) //
+				.restitution(0.5f) //
 				.build();
 
 		String fixtureId = parameters.get("fixtureId");
