@@ -37,7 +37,7 @@ public class ItemSpawnerTemplate extends EntityTemplateImpl {
 		EntityFactory entityFactory;
 		EventManager eventManager;
 
-		float lastObstacleY = 0f;
+		float lastObstacleX = 0f;
 
 		Store<Entity> itemStore = new EntityStore(new StoreFactory<Entity>() {
 
@@ -51,7 +51,7 @@ public class ItemSpawnerTemplate extends EntityTemplateImpl {
 
 		@Override
 		public void init(World world, Entity e) {
-			lastObstacleY = 0f;
+			lastObstacleX = 0f;
 		}
 
 		@Override
@@ -64,22 +64,23 @@ public class ItemSpawnerTemplate extends EntityTemplateImpl {
 
 			Spatial mainCharacterSpatial = Components.getSpatialComponent(mainCharacter).getSpatial();
 
-			if (mainCharacterSpatial.getY() > lastObstacleY) {
+			if (mainCharacterSpatial.getX() > lastObstacleX) {
 
-				lastObstacleY += 30f;
+				lastObstacleX += 50f;
 
 				int items = MathUtils.random(3, 8);
 
 				for (int i = 0; i < items; i++) {
-					float x = MathUtils.random(-5f, 5f);
-					float y = MathUtils.random(5f, 10f);
+					float x = MathUtils.random(0f,40f);
+					float y = MathUtils.random(-10f, 10f);
 
-					lastObstacleY += y;
+					lastObstacleX += x;
 
-					Entity item = itemStore.get();
+					Entity item 
+					= itemStore.get();
 
 					Spatial spatial = Components.getSpatialComponent(item).getSpatial();
-					spatial.setPosition(x, lastObstacleY);
+					spatial.setPosition(lastObstacleX, y);
 					spatial.setAngle(MathUtils.random(0f, 360f));
 
 				}
@@ -91,7 +92,7 @@ public class ItemSpawnerTemplate extends EntityTemplateImpl {
 
 				Spatial spatial = Components.getSpatialComponent(item).getSpatial();
 
-				if (spatial.getY() < mainCharacterSpatial.getY() - 10f)
+				if (spatial.getX() < mainCharacterSpatial.getX() - 10f)
 					itemStore.free(item);
 			}
 

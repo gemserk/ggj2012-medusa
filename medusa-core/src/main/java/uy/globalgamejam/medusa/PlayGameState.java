@@ -1,15 +1,15 @@
 package uy.globalgamejam.medusa;
 
+import uy.globalgamejam.medusa.LevelGeneratorTemplate.Element;
 import uy.globalgamejam.medusa.components.Components;
 import uy.globalgamejam.medusa.components.Controller;
 import uy.globalgamejam.medusa.components.TailComponent;
-import uy.globalgamejam.medusa.tags.Tags;
 import uy.globalgamejam.medusa.templates.AttachedCameraTemplate;
+import uy.globalgamejam.medusa.templates.LevelInstantiator;
 import uy.globalgamejam.medusa.templates.ObstacleSpawnerTemplate2;
 import uy.globalgamejam.medusa.templates.SnakeCharacterTemplate;
 import uy.globalgamejam.medusa.templates.TailPartTemplate;
 import uy.globalgamejam.medusa.templates.TouchControllerTemplate;
-import uy.globalgamejam.medusa.templates.enemies.FixedEnemyTemplate;
 
 import com.artemis.Entity;
 import com.artemis.World;
@@ -19,16 +19,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.gemserk.animation4j.transitions.sync.Synchronizer;
 import com.gemserk.commons.artemis.WorldWrapper;
-import com.gemserk.commons.artemis.components.PhysicsComponent;
-import com.gemserk.commons.artemis.components.ScriptComponent;
-import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
-import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.artemis.render.RenderLayers;
-import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.CameraUpdateSystem;
 import com.gemserk.commons.artemis.systems.EventManagerWorldSystem;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
@@ -40,11 +36,8 @@ import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
-import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
-import com.gemserk.commons.gdx.box2d.Contacts;
-import com.gemserk.commons.gdx.box2d.Contacts.Contact;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
@@ -159,7 +152,13 @@ public class PlayGameState extends GameStateImpl {
 				.put("camera", worldCamera) //
 				);
 
-//		entityFactory.instantiate(injector.getInstance(ItemSpawnerTemplate.class));
+		// entityFactory.instantiate(injector.getInstance(ItemSpawnerTemplate.class));
+
+		LevelGeneratorTemplate levelGenerator = injector.getInstance(LevelGeneratorTemplate.class);
+		Array<Element> elements = levelGenerator.generate();
+		System.out.println("Elements: " + elements.size);
+
+		entityFactory.instantiate(injector.getInstance(LevelInstantiator.class), new ParametersWrapper().put("elements", elements));
 
 		entityFactory.instantiate(injector.getInstance(AttachedCameraTemplate.class), new ParametersWrapper() //
 				.put("libgdx2dCamera", worldCamera) //
@@ -169,85 +168,85 @@ public class PlayGameState extends GameStateImpl {
 		// entityFactory.instantiate(injector.getInstance(ObstacleSpawnerTemplate.class));
 		entityFactory.instantiate(injector.getInstance(ObstacleSpawnerTemplate2.class));
 
-		entityFactory.instantiate(new EntityTemplateImpl() {
-			@Override
-			public void apply(Entity entity) {
-				entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
-
-					public void update(World world, Entity e) {
-						Entity mainCharacter = world.getTagManager().getEntity(Tags.MainCharacter);
-						if (mainCharacter == null)
-							return;
-						PhysicsComponent physicsComponent = Components.getPhysicsComponent(mainCharacter);
-						Contacts contacts = physicsComponent.getContact();
-
-						score += 10;
-
-						if (!contacts.isInContact())
-							return;
-
-						for (int i = 0; i < contacts.getContactCount(); i++) {
-							Contact contact = contacts.getContact(i);
-
-							if (contact.getOtherFixture().isSensor())
-								continue;
-
-							game.gameOverGameState.getParameters().put("score", score);
-
-							Gdx.app.postRunnable(new Runnable() {
-								@Override
-								public void run() {
-									game.setGameState(game.gameOverGameState, true);
-								}
-							});
-
-							// new TransitionBuilder(game, game.gameOverScreen) //
-							// .parameter("score", score) //
-							// .start();
-
-							return;
-						}
-
-					}
-
-					@Handles(ids = Events.ItemGrabbed)
-					public void scoreOnItemGrabbed(Event e) {
-						score += 10000;
-					}
-
-				}));
-			}
-		});
+		// entityFactory.instantiate(new EntityTemplateImpl() {
+		// @Override
+		// public void apply(Entity entity) {
+		// entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
+		//
+		// public void update(World world, Entity e) {
+		// Entity mainCharacter = world.getTagManager().getEntity(Tags.MainCharacter);
+		// if (mainCharacter == null)
+		// return;
+		// PhysicsComponent physicsComponent = Components.getPhysicsComponent(mainCharacter);
+		// Contacts contacts = physicsComponent.getContact();
+		//
+		// score += 10;
+		//
+		// if (!contacts.isInContact())
+		// return;
+		//
+		// for (int i = 0; i < contacts.getContactCount(); i++) {
+		// Contact contact = contacts.getContact(i);
+		//
+		// if (contact.getOtherFixture().isSensor())
+		// continue;
+		//
+		// game.gameOverGameState.getParameters().put("score", score);
+		//
+		// Gdx.app.postRunnable(new Runnable() {
+		// @Override
+		// public void run() {
+		// game.setGameState(game.gameOverGameState, true);
+		// }
+		// });
+		//
+		// // new TransitionBuilder(game, game.gameOverScreen) //
+		// // .parameter("score", score) //
+		// // .start();
+		//
+		// return;
+		// }
+		//
+		// }
+		//
+		// @Handles(ids = Events.ItemGrabbed)
+		// public void scoreOnItemGrabbed(Event e) {
+		// score += 10000;
+		// }
+		//
+		// }));
+		// }
+		// });
 
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont();
 		customDecimalFormat = new CustomDecimalFormat(10);
 		score = 0L;
 
-		entityFactory.instantiate(new EntityTemplateImpl() {
-			@Override
-			public void apply(Entity entity) {
-				entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
-					final Vector2 position = new Vector2();
-
-					@Override
-					public void update(World world, Entity e) {
-						if (!Gdx.input.justTouched())
-							return;
-						
-						int x = Gdx.input.getX();
-						int y = Gdx.graphics.getHeight() - Gdx.input.getY();
-
-						position.set(x, y);
-						worldCamera.unproject(position);
-						
-						entityFactory.instantiate(injector.getInstance(FixedEnemyTemplate.class), //
-								new ParametersWrapper().put("spatial", new SpatialImpl(position.x, position.y)) //
-								);
-					}
-				}));
-			}
-		});
+		// entityFactory.instantiate(new EntityTemplateImpl() {
+		// @Override
+		// public void apply(Entity entity) {
+		// entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
+		// final Vector2 position = new Vector2();
+		//
+		// @Override
+		// public void update(World world, Entity e) {
+		// if (!Gdx.input.justTouched())
+		// return;
+		//
+		// int x = Gdx.input.getX();
+		// int y = Gdx.graphics.getHeight() - Gdx.input.getY();
+		//
+		// position.set(x, y);
+		// worldCamera.unproject(position);
+		//
+		// entityFactory.instantiate(injector.getInstance(FixedEnemyTemplate.class), //
+		// new ParametersWrapper().put("spatial", new SpatialImpl(position.x, position.y)) //
+		// );
+		// }
+		// }));
+		// }
+		// });
 
 	}
 
