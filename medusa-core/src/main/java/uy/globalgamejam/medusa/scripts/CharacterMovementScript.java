@@ -57,7 +57,7 @@ public class CharacterMovementScript extends ScriptJavaImpl {
 		}
 
 		force.set(0,direction);
-		force.mul(2000f);
+		force.mul(1000f);
 
 		body.applyForceToCenter(force);
 	}

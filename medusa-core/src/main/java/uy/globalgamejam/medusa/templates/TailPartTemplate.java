@@ -1,6 +1,7 @@
 package uy.globalgamejam.medusa.templates;
 
 import uy.globalgamejam.medusa.Collisions;
+import uy.globalgamejam.medusa.components.TailPartComponent;
 
 import com.artemis.Entity;
 import com.artemis.World;
@@ -46,16 +47,22 @@ public class TailPartTemplate extends EntityTemplateImpl {
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.circleShape(0.1f) //
+						.sensor() //
+						.categoryBits(Collisions.Tail)
 						.maskBits(Collisions.None) //
 				) //
 				.type(BodyType.DynamicBody) //
 				.position(0f, 0f) //
 				.userData(entity) //
 				.build();
+		
+		body.setTransform(spatial.getX(), spatial.getY(), 0f);
 
 		entity.addComponent(new PhysicsComponent(body));
 		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, spatial)));
 		entity.addComponent(new ScriptComponent(new DestroyTailScript()));
+		
+		entity.addComponent(new TailPartComponent(owner));
 	}
 
 }

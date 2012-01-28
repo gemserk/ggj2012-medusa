@@ -2,12 +2,15 @@ package uy.globalgamejam.medusa;
 
 import org.w3c.dom.Element;
 
+import uy.globalgamejam.medusa.components.Components;
 import uy.globalgamejam.medusa.components.Controller;
+import uy.globalgamejam.medusa.components.TailComponent;
 import uy.globalgamejam.medusa.tags.Tags;
 import uy.globalgamejam.medusa.templates.AttachedCameraTemplate;
 import uy.globalgamejam.medusa.templates.ItemSpawnerTemplate;
-import uy.globalgamejam.medusa.templates.MainCharacterTemplate;
 import uy.globalgamejam.medusa.templates.ObstacleSpawnerTemplate2;
+import uy.globalgamejam.medusa.templates.SnakeCharacterTemplate;
+import uy.globalgamejam.medusa.templates.TailPartTemplate;
 import uy.globalgamejam.medusa.templates.TouchControllerTemplate;
 
 import com.artemis.Entity;
@@ -20,7 +23,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.animation4j.transitions.sync.Synchronizer;
 import com.gemserk.commons.artemis.WorldWrapper;
-import com.gemserk.commons.artemis.components.Components;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.events.Event;
@@ -96,10 +98,12 @@ public class PlayGameState extends GameStateImpl {
 		normalCamera = new Libgdx2dCameraTransformImpl(0f, 0f);
 		normalCamera.zoom(1f);
 
-		worldCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() *0.15f, Gdx.graphics.getHeight() * 0.5f);
-		worldCamera.zoom(48f * gameScale);
+		float scale = 64f;
+		
+		worldCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() * 0.15f, Gdx.graphics.getHeight() * 0.5f);
+		worldCamera.zoom(scale * gameScale);
 
-		worldRealCamera = new CameraImpl(0, 0, 48f * gameScale, 0f);
+		worldRealCamera = new CameraImpl(0, 0, scale * gameScale, 0f);
 
 		RenderLayers renderLayers = new RenderLayers();
 
@@ -135,16 +139,26 @@ public class PlayGameState extends GameStateImpl {
 		scene.addRenderSystem(new CameraUpdateSystem(new TimeStepProviderGameStateImpl(this)));
 
 		scene.addRenderSystem(new Box2dRenderSystem(worldCamera, physicsWorld));
-		 scene.addRenderSystem(new RenderableSystem(renderLayers));
+		scene.addRenderSystem(new RenderableSystem(renderLayers));
 
 		scene.init();
 
 		Controller controller = new Controller();
 
-		entityFactory.instantiate(injector.getInstance(MainCharacterTemplate.class), new ParametersWrapper() //
+		Entity mainCharacter = entityFactory.instantiate(injector.getInstance(SnakeCharacterTemplate.class), new ParametersWrapper() //
 				.put("spatial", new SpatialImpl(0f, 0f, 1f, 1f, 0f)) //
 				.put("controller", controller) //
 				);
+
+		TailComponent tailComponent = Components.getTailComponent(mainCharacter);
+
+		for (int i = 0; i < 25; i++) {
+			Entity tailPart = entityFactory.instantiate(injector.getInstance(TailPartTemplate.class), new ParametersWrapper() //
+					.put("spatial", new SpatialImpl(-i, 0f, 1f, 1f, 0f)) //
+					.put("owner", mainCharacter) //
+					);
+			tailComponent.parts.add(tailPart);
+		}
 
 		entityFactory.instantiate(injector.getInstance(TouchControllerTemplate.class), new ParametersWrapper() //
 				.put("controller", controller) //
@@ -246,20 +260,6 @@ public class PlayGameState extends GameStateImpl {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		scene.render();
-
-		// lightingOrhtographicCamera.zoom = 1f / worldRealCamera.getZoom();
-		// lightingOrhtographicCamera.position.set(worldRealCamera.getX(), worldRealCamera.getY() + lightingOrhtographicCamera.viewportHeight * 0.35f * lightingOrhtographicCamera.zoom, 0f);
-		//
-		// lightingOrhtographicCamera.update();
-
-		// lightingOrhtographicCamera.view.set(worldCamera.getModelViewMatrix());
-		// lightingOrhtographicCamera.projection.set(worldCamera.getProjectionMatrix());
-		// lightingOrhtographicCamera.combined.set(worldCamera.getCombinedMatrix());
-		//
-		// lightingOrhtographicCamera.invProjectionView.set(worldCamera.getCombinedMatrix());
-		// lightingOrhtographicCamera.invProjectionView.inv();
-		//
-		// lightingOrhtographicCamera.frustum.update(lightingOrhtographicCamera.invProjectionView);
 
 		normalCamera.apply();
 
