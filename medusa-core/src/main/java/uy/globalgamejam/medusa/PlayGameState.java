@@ -5,11 +5,11 @@ import uy.globalgamejam.medusa.components.Controller;
 import uy.globalgamejam.medusa.components.TailComponent;
 import uy.globalgamejam.medusa.tags.Tags;
 import uy.globalgamejam.medusa.templates.AttachedCameraTemplate;
-import uy.globalgamejam.medusa.templates.BasicEnemyTemplate;
 import uy.globalgamejam.medusa.templates.ObstacleSpawnerTemplate2;
 import uy.globalgamejam.medusa.templates.SnakeCharacterTemplate;
 import uy.globalgamejam.medusa.templates.TailPartTemplate;
 import uy.globalgamejam.medusa.templates.TouchControllerTemplate;
+import uy.globalgamejam.medusa.templates.enemies.FixedEnemyTemplate;
 
 import com.artemis.Entity;
 import com.artemis.World;
@@ -241,7 +241,7 @@ public class PlayGameState extends GameStateImpl {
 						position.set(x, y);
 						worldCamera.unproject(position);
 						
-						entityFactory.instantiate(injector.getInstance(BasicEnemyTemplate.class), //
+						entityFactory.instantiate(injector.getInstance(FixedEnemyTemplate.class), //
 								new ParametersWrapper().put("spatial", new SpatialImpl(position.x, position.y)) //
 								);
 					}
