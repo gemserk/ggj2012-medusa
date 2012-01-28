@@ -1,16 +1,15 @@
 package uy.globalgamejam.medusa;
 
-import org.w3c.dom.Element;
 
+import uy.globalgamejam.medusa.LevelGeneratorTemplate.Element;
 import uy.globalgamejam.medusa.components.Controller;
 import uy.globalgamejam.medusa.systems.LightsSystem;
 import uy.globalgamejam.medusa.tags.Tags;
 import uy.globalgamejam.medusa.templates.AttachedCameraTemplate;
-import uy.globalgamejam.medusa.templates.ItemSpawnerTemplate;
+import uy.globalgamejam.medusa.templates.LevelInstantiator;
 import uy.globalgamejam.medusa.templates.MainCharacterTemplate;
 import uy.globalgamejam.medusa.templates.ObstacleSpawnerTemplate2;
 import uy.globalgamejam.medusa.templates.TouchControllerTemplate;
-
 import box2dLight.RayHandler;
 
 import com.artemis.Entity;
@@ -21,6 +20,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.gemserk.animation4j.transitions.sync.Synchronizer;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.Components;
@@ -54,13 +54,9 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
-import com.gemserk.commons.gdx.graphics.NeatTriangulator;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
-import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
 import com.gemserk.commons.reflection.Injector;
-import com.gemserk.commons.svg.SvgLayerProcessor;
-import com.gemserk.commons.svg.inkscape.SvgPath;
 import com.gemserk.commons.text.CustomDecimalFormat;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 
@@ -162,7 +158,13 @@ public class PlayGameState extends GameStateImpl {
 				.put("camera", worldCamera) //
 				);
 
-		entityFactory.instantiate(injector.getInstance(ItemSpawnerTemplate.class));
+//		entityFactory.instantiate(injector.getInstance(ItemSpawnerTemplate.class));
+		
+		LevelGeneratorTemplate levelGenerator = injector.getInstance(LevelGeneratorTemplate.class);
+		Array<Element> elements = levelGenerator.generate();
+		System.out.println("Elements: " + elements.size);
+		
+		entityFactory.instantiate(injector.getInstance(LevelInstantiator.class), new ParametersWrapper().put("elements", elements));
 
 		entityFactory.instantiate(injector.getInstance(AttachedCameraTemplate.class), new ParametersWrapper() //
 				.put("libgdx2dCamera", worldCamera) //
@@ -172,75 +174,60 @@ public class PlayGameState extends GameStateImpl {
 		// entityFactory.instantiate(injector.getInstance(ObstacleSpawnerTemplate.class));
 		entityFactory.instantiate(injector.getInstance(ObstacleSpawnerTemplate2.class));
 
-		entityFactory.instantiate(new EntityTemplateImpl() {
-			@Override
-			public void apply(Entity entity) {
-				entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
-
-					public void update(World world, Entity e) {
-						Entity mainCharacter = world.getTagManager().getEntity(Tags.MainCharacter);
-						if (mainCharacter == null)
-							return;
-						PhysicsComponent physicsComponent = Components.getPhysicsComponent(mainCharacter);
-						Contacts contacts = physicsComponent.getContact();
-
-						score += 10;
-
-						if (!contacts.isInContact())
-							return;
-
-						for (int i = 0; i < contacts.getContactCount(); i++) {
-							Contact contact = contacts.getContact(i);
-
-							if (contact.getOtherFixture().isSensor())
-								continue;
-
-							game.gameOverGameState.getParameters().put("score", score);
-
-							Gdx.app.postRunnable(new Runnable() {
-								@Override
-								public void run() {
-									game.setGameState(game.gameOverGameState, true);
-								}
-							});
-
-							// new TransitionBuilder(game, game.gameOverScreen) //
-							// .parameter("score", score) //
-							// .start();
-
-							return;
-						}
-
-					}
-
-					@Handles(ids = Events.ItemGrabbed)
-					public void scoreOnItemGrabbed(Event e) {
-						score += 10000;
-					}
-
-				}));
-			}
-		});
+//		entityFactory.instantiate(new EntityTemplateImpl() {
+//			@Override
+//			public void apply(Entity entity) {
+//				entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
+//
+//					public void update(World world, Entity e) {
+//						Entity mainCharacter = world.getTagManager().getEntity(Tags.MainCharacter);
+//						if (mainCharacter == null)
+//							return;
+//						PhysicsComponent physicsComponent = Components.getPhysicsComponent(mainCharacter);
+//						Contacts contacts = physicsComponent.getContact();
+//
+//						score += 10;
+//
+//						if (!contacts.isInContact())
+//							return;
+//
+//						for (int i = 0; i < contacts.getContactCount(); i++) {
+//							Contact contact = contacts.getContact(i);
+//
+//							if (contact.getOtherFixture().isSensor())
+//								continue;
+//
+//							game.gameOverGameState.getParameters().put("score", score);
+//
+//							Gdx.app.postRunnable(new Runnable() {
+//								@Override
+//								public void run() {
+//									game.setGameState(game.gameOverGameState, true);
+//								}
+//							});
+//
+//							// new TransitionBuilder(game, game.gameOverScreen) //
+//							// .parameter("score", score) //
+//							// .start();
+//
+//							return;
+//						}
+//
+//					}
+//
+//					@Handles(ids = Events.ItemGrabbed)
+//					public void scoreOnItemGrabbed(Event e) {
+//						score += 10000;
+//					}
+//
+//				}));
+//			}
+//		});
 
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont();
 		customDecimalFormat = new CustomDecimalFormat(10);
 		score = 0L;
-
-		SvgLayerProcessor boundsLayerProcessor = new SvgLayerProcessor("obstacles") {
-
-			Triangulator triangulator;
-
-			@Override
-			protected void handlePathObject(SvgPath svgPath, Element element, Vector2[] vertices) {
-				if (!element.hasAttribute("tileId"))
-					return;
-				triangulator = new NeatTriangulator();
-				for (int i = 0; i < vertices.length; i++)
-					triangulator.addPolyPoint(vertices[i].x, vertices[i].y);
-
-			}
-		};
 
 	}
 

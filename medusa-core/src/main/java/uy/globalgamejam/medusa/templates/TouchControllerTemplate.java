@@ -52,10 +52,10 @@ public class TouchControllerTemplate extends EntityTemplateImpl {
 			// SpatialComponent mainCharacterSpatialComponent = Components.getSpatialComponent(mainCharacter);
 			// Spatial spatial = mainCharacterSpatialComponent.getSpatial();
 			position.set(0f, Gdx.graphics.getHeight() - yCoordinateMonitor.getValue());
-			System.out.println("CONTROL: " + yCoordinateMonitor.getValue());
+//			System.out.println("CONTROL: " + yCoordinateMonitor.getValue());
 			
 			camera.unproject(position);
-
+//			System.out.println("MAPPED: " + position);
 			controllerComponent.controller.desiredY = position.y;
 
 			// // camera.project(position);
