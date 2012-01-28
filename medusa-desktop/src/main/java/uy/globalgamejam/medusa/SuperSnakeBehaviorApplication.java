@@ -8,13 +8,11 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
@@ -39,7 +37,7 @@ public class SuperSnakeBehaviorApplication {
 			super.create();
 			box2dDebugRenderer = new Box2DDebugRenderer();
 
-			libgdx2dCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() * 0.25f, Gdx.graphics.getHeight() * 0.5f);
+			libgdx2dCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.5f);
 			libgdx2dCamera.zoom(48f);
 
 			world = new com.badlogic.gdx.physics.box2d.World(new Vector2(), false);
@@ -47,7 +45,7 @@ public class SuperSnakeBehaviorApplication {
 
 			bodyA = bodyBuilder //
 					.fixture(bodyBuilder.fixtureDefBuilder() //
-							.circleShape(0.5f) //
+							.circleShape(0.25f) //
 							.friction(0f)) //
 					.angle(0f) //
 					.position(0f, 0f) //
@@ -58,42 +56,51 @@ public class SuperSnakeBehaviorApplication {
 
 			Body first = bodyA;
 
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < 70; i++) {
 
 				Vector2 p = first.getPosition();
 
 				Body bodyPart = bodyBuilder //
 						.fixture(bodyBuilder.fixtureDefBuilder() //
-								.circleShape(0.25f) //
+								.circleShape(0.1f) //
 						) //
-						.mass(0.01f) //
+						.mass(0.05f) //
 						.angle(0f) //
-						.position(p.x - 1f, 0f) //
+						.position(p.x - 0.05f - 0.125f, 0f) //
 						.type(BodyType.DynamicBody) //
+						.linearDamping(1f) //
+//						.angularDamping(1f) //
 						.build();
 
-				// jointBuilder.distanceJoint() //
-				// .length(first == bodyA ? 0.75f : 0.5f) //
-				// .bodyA(first)//
-				// .bodyB(bodyPart) //
-				// .build();
+				// bodyPart.setTransform(p.x - 0.15f - 0.25f, 0f, 0f);
 
-				RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
-				revoluteJointDef.bodyA = first;
-				revoluteJointDef.bodyB = bodyPart;
-				revoluteJointDef.collideConnected = false;
-				revoluteJointDef.enableLimit = true;
-				revoluteJointDef.maxMotorTorque = 1000f;
-				revoluteJointDef.enableMotor = false;
-				revoluteJointDef.motorSpeed = 10f;
-				revoluteJointDef.lowerAngle = -180f * MathUtils.degreesToRadians;
-				revoluteJointDef.upperAngle = 180f * MathUtils.degreesToRadians;
+				jointBuilder.distanceJoint() //
+						.dampingRatio(1f) //
+//						.frequencyHz(1f) //
+						.collideConnected(false) //
+						.length(first == bodyA ? 0.27f : 0.05f) //
+						.bodyA(first)//
+						.bodyB(bodyPart) //
+						.build();
 
-				revoluteJointDef.localAnchorA.set(0f, 0f);
-				// revoluteJointDef.localAnchorB.set(0.5f, 0f);
-				revoluteJointDef.localAnchorB.set(first == bodyA ? 0.75f : 0.5f, 0f);
+				// RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
+				// revoluteJointDef.bodyA = first;
+				// revoluteJointDef.bodyB = bodyPart;
+				// revoluteJointDef.collideConnected = false;
+				// revoluteJointDef.enableLimit = true;
+				// revoluteJointDef.maxMotorTorque = 1000f;
+				// revoluteJointDef.enableMotor = true;
+				// revoluteJointDef.motorSpeed = 10f;
+				// revoluteJointDef.lowerAngle = -180f * MathUtils.degreesToRadians;
+				// revoluteJointDef.upperAngle = 180f * MathUtils.degreesToRadians;
+				//
+				// revoluteJointDef.initialize(first, bodyPart, new Vector2(p.x - 0.2f, p.y));
 
-				world.createJoint(revoluteJointDef);
+				// revoluteJointDef.localAnchorA.set(-0.2f, 0f);
+				// // revoluteJointDef.localAnchorB.set(0.5f, 0f);
+				// revoluteJointDef.localAnchorB.set(first == bodyA ? 0.75f : 0.5f, 0f);
+
+				// world.createJoint(revoluteJointDef);
 
 				first = bodyPart;
 
