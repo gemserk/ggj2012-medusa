@@ -3,15 +3,12 @@ package uy.globalgamejam.medusa;
 import org.w3c.dom.Element;
 
 import uy.globalgamejam.medusa.components.Controller;
-import uy.globalgamejam.medusa.systems.LightsSystem;
 import uy.globalgamejam.medusa.tags.Tags;
 import uy.globalgamejam.medusa.templates.AttachedCameraTemplate;
 import uy.globalgamejam.medusa.templates.ItemSpawnerTemplate;
 import uy.globalgamejam.medusa.templates.MainCharacterTemplate;
 import uy.globalgamejam.medusa.templates.ObstacleSpawnerTemplate2;
 import uy.globalgamejam.medusa.templates.TouchControllerTemplate;
-
-import box2dLight.RayHandler;
 
 import com.artemis.Entity;
 import com.artemis.World;
@@ -83,7 +80,6 @@ public class PlayGameState extends GameStateImpl {
 
 	long score;
 
-	private RayHandler rayHandler;
 	private OrthographicCamera lightingOrhtographicCamera;
 
 	private com.badlogic.gdx.physics.box2d.World physicsWorld;
@@ -119,10 +115,6 @@ public class PlayGameState extends GameStateImpl {
 		// lighting stuff
 
 		lightingOrhtographicCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		rayHandler = new RayHandler(physicsWorld);
-		// rayHandler.setAmbientLight(0.9f);
-		rayHandler.setShadows(false);
-		rayHandler.setCulling(false);
 
 		injector.bind("entityFactory", entityFactory);
 		injector.bind("eventManager", eventManager);
@@ -130,7 +122,6 @@ public class PlayGameState extends GameStateImpl {
 		injector.bind("bodyBuilder", new BodyBuilder(physicsWorld));
 		injector.bind("synchronizer", synchronizer);
 		injector.bind("mesh2dBuilder", new Mesh2dBuilder());
-		injector.bind("rayHandler", rayHandler);
 
 		scene.addUpdateSystem(new ScriptSystem());
 		scene.addUpdateSystem(new TagSystem());
@@ -139,8 +130,6 @@ public class PlayGameState extends GameStateImpl {
 		scene.addUpdateSystem(new PhysicsSystem(physicsWorld));
 		// scene.addUpdateSystem(new LimitLinearVelocitySystem(physicsWorld));
 		scene.addUpdateSystem(injector.getInstance(EventManagerWorldSystem.class));
-
-		scene.addRenderSystem(injector.getInstance(LightsSystem.class));
 
 		scene.addRenderSystem(new SpriteUpdateSystem(new TimeStepProviderGameStateImpl(this)));
 		scene.addRenderSystem(new CameraUpdateSystem(new TimeStepProviderGameStateImpl(this)));
@@ -271,9 +260,6 @@ public class PlayGameState extends GameStateImpl {
 		// lightingOrhtographicCamera.invProjectionView.inv();
 		//
 		// lightingOrhtographicCamera.frustum.update(lightingOrhtographicCamera.invProjectionView);
-
-		rayHandler.setCombinedMatrix(worldCamera.getCombinedMatrix());
-		rayHandler.updateAndRender();
 
 		normalCamera.apply();
 

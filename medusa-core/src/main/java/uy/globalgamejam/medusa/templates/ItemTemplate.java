@@ -3,7 +3,6 @@ package uy.globalgamejam.medusa.templates;
 import uy.globalgamejam.medusa.Collisions;
 import uy.globalgamejam.medusa.components.ItemComponent;
 import uy.globalgamejam.medusa.resources.GameResources;
-import box2dLight.RayHandler;
 
 import com.artemis.Entity;
 import com.artemis.World;
@@ -31,8 +30,6 @@ public class ItemTemplate extends EntityTemplateImpl {
 	BodyBuilder bodyBuilder;
 	Injector injector;
 	ResourceManager<String> resourceManager;
-
-	RayHandler rayHandler;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;

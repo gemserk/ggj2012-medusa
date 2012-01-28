@@ -1,0 +1,61 @@
+package uy.globalgamejam.medusa.templates;
+
+import uy.globalgamejam.medusa.Collisions;
+
+import com.artemis.Entity;
+import com.artemis.World;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.gemserk.commons.artemis.components.PhysicsComponent;
+import com.gemserk.commons.artemis.components.ScriptComponent;
+import com.gemserk.commons.artemis.components.SpatialComponent;
+import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
+import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
+import com.gemserk.commons.gdx.box2d.BodyBuilder;
+import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
+import com.gemserk.commons.reflection.Injector;
+
+public class TailPartTemplate extends EntityTemplateImpl {
+
+	public static class DestroyTailScript extends ScriptJavaImpl {
+		
+		@Override
+		public void update(World world, Entity e) {
+			super.update(world, e);
+		}
+		
+	}
+
+	BodyBuilder bodyBuilder;
+	Injector injector;
+
+	public void setInjector(Injector injector) {
+		this.injector = injector;
+	}
+
+	public void setBodyBuilder(BodyBuilder bodyBuilder) {
+		this.bodyBuilder = bodyBuilder;
+	}
+
+	@Override
+	public void apply(Entity entity) {
+		Spatial spatial = parameters.get("spatial");
+		Entity owner = parameters.get("owner");
+
+		Body body = bodyBuilder //
+				.fixture(bodyBuilder.fixtureDefBuilder() //
+						.circleShape(0.1f) //
+						.maskBits(Collisions.None) //
+				) //
+				.type(BodyType.DynamicBody) //
+				.position(0f, 0f) //
+				.userData(entity) //
+				.build();
+
+		entity.addComponent(new PhysicsComponent(body));
+		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, spatial)));
+		entity.addComponent(new ScriptComponent(new DestroyTailScript()));
+	}
+
+}

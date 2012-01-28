@@ -26,12 +26,4 @@ public class Components extends com.gemserk.commons.artemis.components.Component
 	public static ItemComponent getItemComponent(Entity e) {
 		return itemComponentClass.cast(e.getComponent(itemComponentType));
 	}
-	
-	public static final Class<LightComponent> lightComponentClass = LightComponent.class;
-	public static final ComponentType lightComponentType = ComponentTypeManager.getTypeFor(lightComponentClass);
-
-	public static LightComponent getLightComponent(Entity e) {
-		return lightComponentClass.cast(e.getComponent(lightComponentType));
-	}
-	
 }
