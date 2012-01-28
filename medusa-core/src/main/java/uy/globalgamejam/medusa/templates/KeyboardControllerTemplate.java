@@ -41,7 +41,7 @@ public class KeyboardControllerTemplate extends EntityTemplateImpl {
 			
 			ControllerComponent controllerComponent = Components.getControllerComponent(e);
 			
-			controllerComponent.controller.desiredX = desiredX;
+			controllerComponent.controller.desiredY = desiredX;
 			
 			float speed = 0.25f;
 			

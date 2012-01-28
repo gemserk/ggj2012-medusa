@@ -36,7 +36,7 @@ public class AttachedCameraTemplate extends EntityTemplateImpl {
 			CameraComponent cameraComponent = Components.getCameraComponent(e);
 			
 			Camera camera = cameraComponent.getCamera();
-			camera.setPosition(camera.getX(), spatial.getY());
+			camera.setPosition(spatial.getX(), camera.getY());
 		}
 
 	}

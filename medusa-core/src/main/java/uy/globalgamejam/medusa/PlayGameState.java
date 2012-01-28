@@ -95,12 +95,12 @@ public class PlayGameState extends GameStateImpl {
 
 		synchronizer = new Synchronizer();
 
-		float gameScale = Gdx.graphics.getHeight() / 800f;
+		float gameScale = Gdx.graphics.getHeight() / 1024f;
 
 		normalCamera = new Libgdx2dCameraTransformImpl(0f, 0f);
 		normalCamera.zoom(1f);
 
-		worldCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.15f);
+		worldCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() *0.15f, Gdx.graphics.getHeight() * 0.5f);
 		worldCamera.zoom(48f * gameScale);
 
 		worldRealCamera = new CameraImpl(0, 0, 48f * gameScale, 0f);
