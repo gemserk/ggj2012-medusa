@@ -3,6 +3,7 @@ package uy.globalgamejam.medusa.templates;
 import uy.globalgamejam.medusa.Collisions;
 import uy.globalgamejam.medusa.components.ItemComponent;
 import uy.globalgamejam.medusa.resources.GameResources;
+import uy.globalgamejam.medusa.tags.Groups;
 
 import com.artemis.Entity;
 import com.artemis.World;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.gemserk.commons.artemis.components.Components;
+import com.gemserk.commons.artemis.components.GroupComponent;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
@@ -74,6 +76,8 @@ public class BasicEnemyTemplate extends EntityTemplateImpl {
 		entity.addComponent(new PhysicsComponent(body));
 		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, spatial)));
 		entity.addComponent(new ItemComponent());
+		
+		entity.addComponent(new GroupComponent(Groups.Enemies));
 
 		Sprite sprite = resourceManager.getResourceValue(GameResources.Sprites.Item);
 

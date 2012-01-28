@@ -8,6 +8,7 @@ import uy.globalgamejam.medusa.components.EngineComponent;
 import uy.globalgamejam.medusa.components.TailComponent;
 import uy.globalgamejam.medusa.scripts.CharacterMovementScript;
 import uy.globalgamejam.medusa.scripts.EngineScript;
+import uy.globalgamejam.medusa.tags.Groups;
 import uy.globalgamejam.medusa.tags.Tags;
 
 import com.artemis.Entity;
@@ -15,6 +16,7 @@ import com.artemis.World;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.gemserk.commons.artemis.components.GroupComponent;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
@@ -22,6 +24,8 @@ import com.gemserk.commons.artemis.components.TagComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
+import com.gemserk.commons.gdx.box2d.Contacts;
+import com.gemserk.commons.gdx.box2d.Contacts.Contact;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
@@ -85,6 +89,37 @@ public class SnakeCharacterTemplate extends EntityTemplateImpl {
 
 	}
 
+	public static class EatEnemiesScript extends ScriptJavaImpl {
+
+		@Override
+		public void update(World world, Entity e) {
+			PhysicsComponent physicsComponent = Components.getPhysicsComponent(e);
+
+			Contacts contacts = physicsComponent.getContact();
+
+			if (!contacts.isInContact())
+				return;
+			
+			for (int i = 0; i < contacts.getContactCount(); i++) {
+				
+				Contact contact = contacts.getContact(i);
+				
+				Entity entity = (Entity) contact.getOtherFixture().getBody().getUserData();
+				
+				GroupComponent groupComponent = Components.getGroupComponent(entity);
+				
+				if (groupComponent == null)
+					continue;
+				
+				if (Groups.Enemies.equals(groupComponent.group))
+					entity.delete();
+				
+			}
+
+		}
+
+	}
+
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
@@ -128,6 +163,7 @@ public class SnakeCharacterTemplate extends EntityTemplateImpl {
 		entity.addComponent(new ScriptComponent( //
 				injector.getInstance(CharacterMovementScript.class), //
 				injector.getInstance(EngineScript.class), //
+				injector.getInstance(EatEnemiesScript.class), //
 				injector.getInstance(MoveTailScript.class) //
 		));
 
