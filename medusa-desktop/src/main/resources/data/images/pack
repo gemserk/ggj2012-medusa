@@ -1,0 +1,33 @@
+
+world1.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+obstacle-01
+  rotate: false
+  xy: 2, 2
+  size: 233, 487
+  orig: 233, 487
+  offset: 0, 0
+  index: -1
+obstacle-02
+  rotate: false
+  xy: 2, 491
+  size: 301, 335
+  orig: 301, 335
+  offset: 0, 0
+  index: -1
+item
+  rotate: false
+  xy: 237, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+character
+  rotate: false
+  xy: 367, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1

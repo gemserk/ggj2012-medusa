@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>uy.globalgamejam.medusa</groupId>
+		<artifactId>medusa</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<groupId>uy.globalgamejam.medusa</groupId>
+	<artifactId>medusa-core</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>Global Game Jam - Medusa - Desktop</name>
+	<description>Global Game Jam - Medusa - Desktop</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jmock</groupId>
+			<artifactId>jmock</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jmock</groupId>
+			<artifactId>jmock-legacy</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jmock</groupId>
+			<artifactId>jmock-junit4</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.badlogic.gdx</groupId>
+			<artifactId>gdx</artifactId>
+			<version>${gdx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.gemserk.commons.gdx</groupId>
+			<artifactId>commons-gdx-core</artifactId>
+			<version>${commons.gdx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.gemserk.commons.gdx</groupId>
+			<artifactId>commons-gdx-artemis</artifactId>
+			<version>${commons.gdx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.gemserk.commons.gdx</groupId>
+			<artifactId>commons-gdx-resources</artifactId>
+			<version>${commons.gdx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>aurelienribon.fixtureatlas</groupId>
+			<artifactId>libgdx-fixtureatlas</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>kalleh.box2dlights</groupId>
+			<artifactId>box2dlights</artifactId>
+			<version>1.0.1-SNAPSHOT</version>
+		</dependency>
+
+	</dependencies>
+
+</project>
