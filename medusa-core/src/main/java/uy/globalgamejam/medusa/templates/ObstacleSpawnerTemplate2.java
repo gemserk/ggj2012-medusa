@@ -72,7 +72,7 @@ public class ObstacleSpawnerTemplate2 extends EntityTemplateImpl {
 
 			obstacles = new ArrayList<Entity>();
 
-			EntityTemplate obstacleTemplate = injector.getInstance(ObstacleTemplate2.class);
+			EntityTemplate obstacleTemplate = injector.getInstance(ObstacleTemplateSVG.class);
 
 			Document obstaclesDocument = resourceManager.getResourceValue(GameResources.XmlDocuments.Obstacles);
 			Map<String, Triangulator> obstacleFixtures = new HashMap<String, Triangulator>();

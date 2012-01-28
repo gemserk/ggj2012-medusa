@@ -1,7 +1,5 @@
 package uy.globalgamejam.medusa.templates;
 
-import java.util.List;
-
 import uy.globalgamejam.medusa.LevelGeneratorTemplate.Element;
 import uy.globalgamejam.medusa.components.Components;
 import uy.globalgamejam.medusa.tags.Tags;
@@ -14,9 +12,7 @@ import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.reflection.Injector;
-import com.gemserk.componentsengine.utils.ParametersWrapper;
 
 public class LevelInstantiator extends EntityTemplateImpl {
 
