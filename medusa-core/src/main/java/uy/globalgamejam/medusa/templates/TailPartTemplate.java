@@ -40,6 +40,9 @@ public class TailPartTemplate extends EntityTemplateImpl {
 			
 			TailComponent tailComponent = Components.getTailComponent(owner);
 			
+			if(tailComponent==null)
+				return;
+			
 			int indexOf = tailComponent.parts.indexOf(e);
 			
 			if (indexOf == -1)

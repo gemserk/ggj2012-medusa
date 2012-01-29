@@ -102,30 +102,30 @@ public class LevelGeneratorTemplate {
 			System.out.println("Element(fixed enemy) Created at " + element.xCoord);
 		}
 		
-//		lastX = 0;
-//		while (lastX < distance) {
-//			lastX += MathUtils.random(10, 20);
-//			Element element = new Element();
-//			element.xCoord = lastX - GENERATION_BETWEEN_ELEMENTS;
-//			
-//			element.entityTemplate = TopDownEnemyTemplate.class;
-//
-//			Sprite sprite = resourceManager.getResourceValue(Sprites.Enemy1);
-//			float enemyScale = 1f;
-//			float width = sprite.getWidth() / (worldScale*enemyScale);
-//			float height = sprite.getHeight() / (worldScale*enemyScale);
-//			
-//			element.parameters = new ParametersWrapper() //
-//					.put("spatial", new SpatialImpl(lastX, MathUtils.random(-maxYCoord, maxYCoord), width, height, 0))//
-//					.put("initialVelocity", new Vector2(1, 0).rotate(MathUtils.random(360)).mul(MathUtils.random(5f)))//
-//					.put("sprite", sprite)//
-//					.put("fixtureId", "enemigo2a.png") //
-//
-//			; //
-//
-//			elements.add(element);
-//			System.out.println("Element(fixed enemy) Created at " + element.xCoord);
-//		}
+		lastX = 0;
+		while (lastX < distance) {
+			lastX += MathUtils.random(10, 20);
+			Element element = new Element();
+			element.xCoord = lastX - GENERATION_BETWEEN_ELEMENTS;
+			
+			element.entityTemplate = TopDownEnemyTemplate.class;
+
+			Sprite sprite = resourceManager.getResourceValue(Sprites.Enemigo2);
+			float enemyScale = 1f;
+			float width = sprite.getWidth() / (worldScale*enemyScale);
+			float height = sprite.getHeight() / (worldScale*enemyScale);
+			
+			element.parameters = new ParametersWrapper() //
+					.put("spatial", new SpatialImpl(lastX, MathUtils.random(-maxYCoord, maxYCoord), width, height, 0))//
+					.put("movingDown", MathUtils.randomBoolean())//
+					.put("sprite", sprite)//
+					.put("fixtureId", "enemigo2a.png") //
+
+			; //
+
+			elements.add(element);
+			System.out.println("Element(fixed enemy) Created at " + element.xCoord);
+		}
 
 //		lastX = 0;
 //		while (lastX < distance) {
