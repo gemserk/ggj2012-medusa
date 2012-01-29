@@ -82,6 +82,8 @@ public class PlayGameState extends GameStateImpl {
 
 		synchronizer = new Synchronizer();
 
+		GameContentState gameContentState = getParameters().get("gameContentState");
+
 		float gameScale = Gdx.graphics.getHeight() / 480f;
 
 		normalCamera = new Libgdx2dCameraTransformImpl(0f, 0f);
@@ -115,8 +117,8 @@ public class PlayGameState extends GameStateImpl {
 		injector.bind("synchronizer", synchronizer);
 		injector.bind("mesh2dBuilder", new Mesh2dBuilder());
 		injector.bind("replayManager", new ReplayManager());
-		injector.bind("maxYCoord", (Float)(Gdx.graphics.getHeight()/(worldScale*2)));
-		injector.bind("worldScale", (Float)worldScale);
+		injector.bind("maxYCoord", (Float) (Gdx.graphics.getHeight() / (worldScale * 2)));
+		injector.bind("worldScale", (Float) worldScale);
 
 		scene.addUpdateSystem(new ScriptSystem());
 		scene.addUpdateSystem(new TagSystem());
@@ -150,9 +152,9 @@ public class PlayGameState extends GameStateImpl {
 					);
 			tailComponent.parts.add(tailPart);
 		}
-		
+
 		Replay replay = new Replay();
-		
+
 		replay.duration = 15000;
 		replay.add(new ReplayEntry(0, 0f, 2f));
 		replay.add(new ReplayEntry(2500, 15f, 2f));
@@ -163,7 +165,7 @@ public class PlayGameState extends GameStateImpl {
 				.put("spatial", new SpatialImpl(0f, 0f, 1f, 1f, 0f)) //
 				.put("replay", replay) //
 				);
-		
+
 		tailComponent = Components.getTailComponent(ghostSnake);
 
 		for (int i = 0; i < 25; i++) {

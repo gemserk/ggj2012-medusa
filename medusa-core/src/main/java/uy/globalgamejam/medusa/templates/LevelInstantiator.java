@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Array;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
+import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.reflection.Injector;
@@ -18,15 +19,14 @@ public class LevelInstantiator extends EntityTemplateImpl {
 
 	EntityFactory entityFactory;
 	Injector injector;
-	
-	
+
 	@Override
 	public void apply(Entity entity) {
 		final Array<Element> elements = parameters.get("elements");
-		entity.addComponent(new ScriptComponent(new ScriptJavaImpl(){
-			
+		entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
+
 			int lastItemGenerated = 0;
-			
+
 			@Override
 			public void update(World world, Entity e) {
 				Entity mainCharacter = world.getTagManager().getEntity(Tags.MainCharacter);
@@ -37,16 +37,15 @@ public class LevelInstantiator extends EntityTemplateImpl {
 				Spatial mainCharacterSpatial = Components.getSpatialComponent(mainCharacter).getSpatial();
 
 				float charX = mainCharacterSpatial.getX();
-				
-				
-				while(lastItemGenerated < elements.size && elements.get(lastItemGenerated).xCoord <= charX){
+
+				while (lastItemGenerated < elements.size && elements.get(lastItemGenerated).xCoord <= charX) {
 					Element element = elements.get(lastItemGenerated);
-					entityFactory.instantiate(element.entityTemplate, element.parameters);					
+					EntityTemplate entityTemplate = injector.getInstance(element.entityTemplate);
+					entityFactory.instantiate(entityTemplate, element.parameters);
 					System.out.println("Instantiated: " + lastItemGenerated);
 					lastItemGenerated++;
 				}
-				
-				
+
 			}
 		}));
 

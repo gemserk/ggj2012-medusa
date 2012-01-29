@@ -1,6 +1,5 @@
 package uy.globalgamejam.medusa;
 
-import java.io.ObjectOutputStream.PutField;
 import java.util.Comparator;
 
 import uy.globalgamejam.medusa.resources.GameResources;
@@ -22,43 +21,43 @@ public class LevelGeneratorTemplate {
 
 	public class Element {
 		public float xCoord;
-		public EntityTemplate entityTemplate;
+		public Class<? extends EntityTemplate> entityTemplate;
 		public Parameters parameters;
-
 	}
-
 
 	Injector injector;
 	Float maxYCoord;
 	Float worldScale;
 
+	ResourceManager<String> resourceManager;
+
 	public Array<Element> generate() {
-		
+
 		initializeObstacles();
 		float GENERATION_BETWEEN_ELEMENTS = 50;
-		
+
 		float distance = 1000;
 		final Array<Element> elements = new Array<Element>();
 
 		float lastX = 0;
-		while(lastX<distance) {
+		while (lastX < distance) {
 			lastX += 10;
 			Element element = new Element();
 			element.xCoord = lastX - GENERATION_BETWEEN_ELEMENTS;
-			element.entityTemplate = injector.getInstance(ItemTemplate.class);
+			element.entityTemplate = ItemTemplate.class;
 			element.parameters = new ParametersWrapper().put("spatial", new SpatialImpl(lastX, 0, 1, 1, 0));
 			elements.add(element);
 			System.out.println("Element(items) Created at " + element.xCoord);
 		}
 		lastX = 0;
-		while(lastX<distance)  {
+		while (lastX < distance) {
 			lastX += MathUtils.random(10, 30);
 			Element element = new Element();
 			element.xCoord = lastX - GENERATION_BETWEEN_ELEMENTS;
-			element.entityTemplate = injector.getInstance(ObstacleTemplate.class);
+			element.entityTemplate = ObstacleTemplate.class;
 
 			FixedObstacleDefinition obstacle = randomElement(obstacles);
-			
+
 			System.out.println("Sprite: " + obstacle.sprite);
 			Sprite sprite = resourceManager.getResourceValue(obstacle.sprite);
 			String fixtureId = obstacle.fixture;
@@ -67,33 +66,31 @@ public class LevelGeneratorTemplate {
 			float height = sprite.getHeight() / worldScale;
 			System.out.println(maxYCoord);
 			float y;
-			if(obstacle.alignY==0f){
-				y = -maxYCoord+0.5f*height;
-			} else if(obstacle.alignY==1){
-				y = maxYCoord-0.5f*height;
+			if (obstacle.alignY == 0f) {
+				y = -maxYCoord + 0.5f * height;
+			} else if (obstacle.alignY == 1) {
+				y = maxYCoord - 0.5f * height;
 			} else {
 				y = obstacle.yCoord;
 			}
-			
-			
-			
+
 			element.parameters = new ParametersWrapper() //
 					.put("spatial", new SpatialImpl(lastX, y, width, height, obstacle.angle)) //
 					.put("fixtureId", fixtureId) //
 					.put("sprite", sprite)//
-//					.put("alignY", obstacle.alignY);//
-					;
-			
+			// .put("alignY", obstacle.alignY);//
+			;
+
 			elements.add(element);
 			System.out.println("Element(obstacle) Created at " + element.xCoord);
 		}
 
 		lastX = 0;
-		while(lastX<distance)  {
+		while (lastX < distance) {
 			lastX += MathUtils.random(10, 20);
 			Element element = new Element();
 			element.xCoord = lastX - GENERATION_BETWEEN_ELEMENTS;
-			element.entityTemplate = injector.getInstance(FixedEnemyTemplate.class);
+			element.entityTemplate = FixedEnemyTemplate.class;
 
 			element.parameters = new ParametersWrapper() //
 					.put("spatial", new SpatialImpl(lastX, 5, 1, 1, 0)); //
@@ -112,10 +109,6 @@ public class LevelGeneratorTemplate {
 		});
 		return elements;
 	}
-
-
-
-	ResourceManager<String> resourceManager;
 
 	String[] sprites = { /* GameResources.Sprites.Obstacle0, GameResources.Sprites.Obstacle1 , */GameResources.Sprites.Muro1, GameResources.Sprites.Muro2 };
 	String[] fixtures = { /* "images/world/obstacle-01.png", "images/world/obstacle-02.png", */"muro1.png", "muro2.png" };
@@ -137,14 +130,14 @@ public class LevelGeneratorTemplate {
 	}
 
 	Array<FixedObstacleDefinition> obstacles = new Array<FixedObstacleDefinition>();
-	
+
 	private void initializeObstacles() {
-		
+
 		for (int i = 1; i < 8; i++) {
-			obstacles.add(new FixedObstacleDefinition("Muro"+i+"a", "muro" + i + "a.png", 1, 0, 0));
-			obstacles.add(new FixedObstacleDefinition("Muro"+i+"b", "muro" + i + "b.png", 1, 0, 0));
-			obstacles.add(new FixedObstacleDefinition("Muro"+i+"a", "muro" + i + "a.png",0f, 0, MathUtils.degreesToRadians * 180));
-			obstacles.add(new FixedObstacleDefinition("Muro"+i+"b", "muro" + i + "b.png",0f, 0, MathUtils.degreesToRadians * 180));
+			obstacles.add(new FixedObstacleDefinition("Muro" + i + "a", "muro" + i + "a.png", 1, 0, 0));
+			obstacles.add(new FixedObstacleDefinition("Muro" + i + "b", "muro" + i + "b.png", 1, 0, 0));
+			obstacles.add(new FixedObstacleDefinition("Muro" + i + "a", "muro" + i + "a.png", 0f, 0, MathUtils.degreesToRadians * 180));
+			obstacles.add(new FixedObstacleDefinition("Muro" + i + "b", "muro" + i + "b.png", 0f, 0, MathUtils.degreesToRadians * 180));
 		}
 	}
 
@@ -157,7 +150,7 @@ public class LevelGeneratorTemplate {
 	public <T> int randomIndex(T[] elements) {
 		return MathUtils.random(0, elements.length - 1);
 	}
-	
+
 	public <T> T randomElement(Array<T> elements) {
 		if (elements.size == 0)
 			return null;

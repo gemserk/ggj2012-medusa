@@ -99,6 +99,10 @@ public class Game extends ApplicationListenerGameStateBasedImpl {
 
 		playGameState = fixedTimestep(internalState(playGameState));
 		gameOverGameState = fixedTimestep(internalState(gameOverGameState));
+		
+		GameContentState gameContentState = new GameContentState();
+		
+		playGameState.getParameters().put("gameContentState", gameContentState);
 
 		setGameState(playGameState);
 
