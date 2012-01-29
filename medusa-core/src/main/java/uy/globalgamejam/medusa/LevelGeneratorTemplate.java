@@ -35,26 +35,26 @@ public class LevelGeneratorTemplate {
 	public Array<Element> generate() {
 		
 		initializeObstacles();
-		float GENERATION_DISTANCE = 50;
+		float GENERATION_BETWEEN_ELEMENTS = 50;
 		
-		float distance = 100;
+		float distance = 1000;
 		final Array<Element> elements = new Array<Element>();
 
 		float lastX = 0;
-		for (int i = 0; i < 20; i++) {
+		while(lastX<distance) {
 			lastX += 10;
 			Element element = new Element();
-			element.xCoord = lastX - GENERATION_DISTANCE;
+			element.xCoord = lastX - GENERATION_BETWEEN_ELEMENTS;
 			element.entityTemplate = injector.getInstance(ItemTemplate.class);
 			element.parameters = new ParametersWrapper().put("spatial", new SpatialImpl(lastX, 0, 1, 1, 0));
 			elements.add(element);
 			System.out.println("Element(items) Created at " + element.xCoord);
 		}
 		lastX = 0;
-		for (int i = 0; i < 20; i++) {
+		while(lastX<distance)  {
 			lastX += MathUtils.random(10, 30);
 			Element element = new Element();
-			element.xCoord = lastX - GENERATION_DISTANCE;
+			element.xCoord = lastX - GENERATION_BETWEEN_ELEMENTS;
 			element.entityTemplate = injector.getInstance(ObstacleTemplate.class);
 
 			FixedObstacleDefinition obstacle = randomElement(obstacles);
@@ -89,10 +89,10 @@ public class LevelGeneratorTemplate {
 		}
 
 		lastX = 0;
-		for (int i = 0; i < 20; i++) {
+		while(lastX<distance)  {
 			lastX += MathUtils.random(10, 20);
 			Element element = new Element();
-			element.xCoord = lastX - GENERATION_DISTANCE;
+			element.xCoord = lastX - GENERATION_BETWEEN_ELEMENTS;
 			element.entityTemplate = injector.getInstance(FixedEnemyTemplate.class);
 
 			element.parameters = new ParametersWrapper() //
