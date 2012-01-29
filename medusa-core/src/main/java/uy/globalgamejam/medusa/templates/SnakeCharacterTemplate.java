@@ -76,13 +76,11 @@ public class SnakeCharacterTemplate extends EntityTemplateImpl {
 		entity.addComponent(new TailComponent());
 		
 		Sprite sprite = resourceManager.getResourceValue(Sprites.Cabeza);
-		
 
 		SpriteComponent spriteComponent = new SpriteComponent(sprite, 0.5f, 0.5f, Color.WHITE);
 		spriteComponent.setUpdateRotation(false);
 		entity.addComponent(spriteComponent);
 		entity.addComponent(new RenderableComponent(5, true));
-		
 		
 		ReplayRecorderScript replayRecorderScript = new ReplayRecorderScript();
 		injector.injectMembers(replayRecorderScript);

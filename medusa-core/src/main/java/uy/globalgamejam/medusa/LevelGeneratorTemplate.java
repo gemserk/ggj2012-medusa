@@ -6,7 +6,7 @@ import uy.globalgamejam.medusa.resources.GameResources;
 import uy.globalgamejam.medusa.resources.GameResources.Animations;
 import uy.globalgamejam.medusa.resources.GameResources.Sprites;
 import uy.globalgamejam.medusa.templates.ExtraBackgroundTemplate;
-import uy.globalgamejam.medusa.templates.ItemTemplate;
+import uy.globalgamejam.medusa.templates.WorldLimitTemplate;
 import uy.globalgamejam.medusa.templates.ObstacleTemplate;
 import uy.globalgamejam.medusa.templates.enemies.SimpleEnemyTemplate;
 import uy.globalgamejam.medusa.templates.enemies.TopDownEnemyTemplate;
