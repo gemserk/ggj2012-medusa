@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL10;
@@ -75,6 +76,11 @@ public class SuperSnakeBehaviorApplication {
 
 			}
 
+			Music music = Gdx.audio.newMusic(Gdx.files.internal("data/audio/game.ogg"));
+
+			music.setLooping(true);
+			music.play();
+
 		}
 
 		Vector2 position = new Vector2();
@@ -113,11 +119,10 @@ public class SuperSnakeBehaviorApplication {
 
 				if (amplitud > 0.15f)
 					amplitud = 0.15f;
-				
+
 				if (Math.abs(bodyA.getLinearVelocity().y) > 1f)
 					amplitud *= 1f / (Math.abs(bodyA.getLinearVelocity().y) * 10f);
-				
-				
+
 				float displacementY = (float) Math.sin(x * 0.5f + i) * amplitud;
 
 				// if (Math.abs(bodyA.getLinearVelocity().y) > 0.1f)

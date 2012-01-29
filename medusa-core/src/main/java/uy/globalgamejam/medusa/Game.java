@@ -1,9 +1,9 @@
 package uy.globalgamejam.medusa;
 
-import uy.globalgamejam.medusa.replay.ReplayManager;
 import uy.globalgamejam.medusa.resources.GameResources;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -16,6 +16,7 @@ import com.gemserk.commons.gdx.GameState;
 import com.gemserk.commons.gdx.GameStateDelegateFixedTimestepImpl;
 import com.gemserk.commons.gdx.GameStateDelegateWithInternalStateImpl;
 import com.gemserk.commons.gdx.GlobalTime;
+import com.gemserk.commons.gdx.audio.SoundPlayer;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.performance.AverageDeltaTimeLogger;
@@ -23,6 +24,7 @@ import com.gemserk.commons.performance.DeltaTimeLogger;
 import com.gemserk.commons.performance.TimeLogger;
 import com.gemserk.commons.reflection.Injector;
 import com.gemserk.commons.reflection.InjectorImpl;
+import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
 
@@ -91,9 +93,12 @@ public class Game extends ApplicationListenerGameStateBasedImpl {
 		GameResources.load(resourceManager);
 
 		Injector injector = new InjectorImpl();
+		
+		SoundPlayer soundPlayer = new SoundPlayer();
 
 		injector.bind("resourceManager", resourceManager);
 		injector.bind("game", this);
+		injector.bind("soundPlayer", soundPlayer);
 
 		playGameState = injector.getInstance(PlayGameState.class);
 		gameOverGameState = injector.getInstance(GameOverGameState.class);
@@ -142,6 +147,13 @@ public class Game extends ApplicationListenerGameStateBasedImpl {
 			}
 		};
 		accumulatorLogger.enable();
+		
+		Resource<Music> musicResource = resourceManager.get(GameResources.MusicTracks.Game);
+		
+		Music music = musicResource.get();
+		
+		music.setLooping(true);		
+		music.play();
 	}
 
 	@Override

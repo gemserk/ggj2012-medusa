@@ -46,6 +46,12 @@ public class GameResources extends LibgdxResourceBuilder {
 		public static final String Obstacles = "ObstaclesXmlDocument";
 
 	}
+	
+	public static class MusicTracks {
+		
+		public static final String Game = "GameMusic";
+		
+	}
 
 	/**
 	 * Only creates all resource declarations, it doesn't load all the stuff yet.
@@ -108,5 +114,6 @@ public class GameResources extends LibgdxResourceBuilder {
 
 		resource(XmlDocuments.Obstacles, xmlDocument("data/fixtures/obstacles.svg"));
 
+		music(MusicTracks.Game, "data/audio/game.ogg");
 	}
 }

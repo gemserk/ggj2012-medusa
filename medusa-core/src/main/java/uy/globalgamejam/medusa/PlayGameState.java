@@ -26,7 +26,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.animation4j.transitions.sync.Synchronizer;
 import com.gemserk.commons.artemis.WorldWrapper;
@@ -72,24 +72,6 @@ import com.gemserk.componentsengine.utils.ParametersWrapper;
 
 public class PlayGameState extends GameStateImpl {
 
-	private final class EntitySystemExtension extends EntitySystem {
-		
-		public EntitySystemExtension() {
-			super(SpatialComponent.class);
-		}
-		
-		@Override
-		protected void processEntities(ImmutableBag<Entity> entities) {
-//			ShapeRenderer shapeRenderer = new ShapeRenderer();
-//			shapeRenderer.
-			
-		}
-
-		@Override
-		protected boolean checkProcessing() {
-			return true;
-		}
-	}
 
 	Injector injector;
 	Game game;
@@ -112,7 +94,7 @@ public class PlayGameState extends GameStateImpl {
 	private Camera worldRealCamera;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 	private GameContentState gameContentState;
-
+	
 	@Override
 	public void init() {
 		final Injector injector = this.injector.createChildInjector();
@@ -166,14 +148,14 @@ public class PlayGameState extends GameStateImpl {
 		scene.addRenderSystem(new Box2dRenderSystem(worldCamera, physicsWorld));
 		scene.addRenderSystem(new RenderableSystem(renderLayers));
 		
-		scene.addRenderSystem(new EntitySystemExtension());
-		
 		scene.init();
 
 		Controller controller = new Controller();
 
+		float y = 0f + MathUtils.random(-gameContentState.maxYCoord * 0.75f, gameContentState.maxYCoord * 0.75f);
+		System.out.println("maincharacter.y = " + y);
 		Entity mainCharacter = entityFactory.instantiate(injector.getInstance(SnakeCharacterTemplate.class), new ParametersWrapper() //
-				.put("spatial", new SpatialImpl(0f, 0f, 1f, 1f, 0f)) //
+				.put("spatial", new SpatialImpl(0f, y, 1f, 1f, 0f)) //
 				.put("controller", controller) //
 				);
 
@@ -194,6 +176,7 @@ public class PlayGameState extends GameStateImpl {
 			Entity ghostSnake = entityFactory.instantiate(injector.getInstance(SnakeGhostTemplate.class), new ParametersWrapper() //
 					.put("spatial", new SpatialImpl(0f, 0f, 1f, 1f, 0f)) //
 					.put("replay", replay) //
+					.put("offset", 1f) //
 					);
 
 			tailComponent = Components.getTailComponent(ghostSnake);
@@ -313,14 +296,6 @@ public class PlayGameState extends GameStateImpl {
 			}
 		});
 		
-		
-					
-
-		
-		
-		
-		
-
 	}
 
 	@Override
