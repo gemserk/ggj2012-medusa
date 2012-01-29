@@ -73,3 +73,31 @@ obstaculo1a
   orig: 113, 113
   offset: 0, 0
   index: -1
+enemigo1a
+  rotate: false
+  xy: 404, 581
+  size: 154, 83
+  orig: 154, 83
+  offset: 0, 0
+  index: -1
+extra2a
+  rotate: false
+  xy: 876, 464
+  size: 142, 83
+  orig: 142, 83
+  offset: 0, 0
+  index: -1
+extra1a
+  rotate: false
+  xy: 404, 666
+  size: 71, 50
+  orig: 71, 50
+  offset: 0, 0
+  index: -1
+enemigo2a
+  rotate: false
+  xy: 477, 666
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1

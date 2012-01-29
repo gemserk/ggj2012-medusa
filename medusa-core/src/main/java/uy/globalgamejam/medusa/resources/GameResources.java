@@ -23,6 +23,8 @@ public class GameResources extends LibgdxResourceBuilder {
 		public static final String Obstacle1 = "Obstacle1Sprite";
 		public static final String Muro1 = "Muro1";
 		public static final String Muro2 = "Muro2";
+		public static final String Enemy1 = "Enemigo1";
+		public static final String Enemigo2 = "Enemigo2";
 	}
 
 	public static class FixtureAtlas {
@@ -70,6 +72,12 @@ public class GameResources extends LibgdxResourceBuilder {
 					.textureAtlas(TextureAtlases.Images, "muro" + i + "a").flip(true, false));
 		}
 		
+		
+		resource(Sprites.Enemy1, sprite2() //
+				.textureAtlas(TextureAtlases.Images, "enemigo1a"));
+		
+		resource(Sprites.Enemigo2, sprite2() //
+				.textureAtlas(TextureAtlases.Images, "enemigo2a"));
 		
 //		resource(Sprites.Muro1, sprite2() //
 //				.textureAtlas(TextureAtlases.Images, "muro1"));
