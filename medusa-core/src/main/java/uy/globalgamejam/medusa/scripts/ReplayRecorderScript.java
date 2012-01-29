@@ -6,7 +6,6 @@ import uy.globalgamejam.medusa.components.Replay.ReplayEntry;
 import uy.globalgamejam.medusa.replay.ReplayManager;
 
 import com.artemis.Entity;
-import com.artemis.World;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GlobalTime;
@@ -28,12 +27,14 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 		recording = true;
 		replay = new Replay();
 		replayTime = 0;
-	}
-
-	@Override
-	public void dispose(World world, Entity e) {
+		
 		replayManager.add(replay);
 	}
+
+//	@Override
+//	public void dispose(World world, Entity e) {
+//		replayManager.add(replay);
+//	}
 
 	public void update(com.artemis.World world, Entity e) {
 		if (!recording)

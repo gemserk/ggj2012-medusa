@@ -136,7 +136,8 @@ public class SnakeGhostTemplate extends EntityTemplateImpl {
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.circleShape(0.5f) //
-						.maskBits(Collisions.None) //
+						.sensor() //
+						.maskBits(Collisions.All) //
 				) //
 				.type(BodyType.DynamicBody) //
 				.position(spatial.getX(), spatial.getY()) //
@@ -152,7 +153,7 @@ public class SnakeGhostTemplate extends EntityTemplateImpl {
 		entity.addComponent(new ScriptComponent( //
 				injector.getInstance(EatEnemiesScript.class), //
 				injector.getInstance(MoveTailScript.class), //
-				injector.getInstance(ReplayMovementScript.class)));
+				new ReplayMovementScript()));
 
 	}
 

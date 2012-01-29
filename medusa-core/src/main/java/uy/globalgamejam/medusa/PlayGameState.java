@@ -1,9 +1,10 @@
 package uy.globalgamejam.medusa;
 
+import java.util.ArrayList;
+
 import uy.globalgamejam.medusa.components.Components;
 import uy.globalgamejam.medusa.components.Controller;
 import uy.globalgamejam.medusa.components.Replay;
-import uy.globalgamejam.medusa.components.Replay.ReplayEntry;
 import uy.globalgamejam.medusa.components.TailComponent;
 import uy.globalgamejam.medusa.templates.AttachedCameraTemplate;
 import uy.globalgamejam.medusa.templates.KeyboardControllerTemplate;
@@ -149,29 +150,28 @@ public class PlayGameState extends GameStateImpl {
 					);
 			tailComponent.parts.add(tailPart);
 		}
+		
+		ArrayList<Replay> replays = gameContentState.replayManager.getReplays();
 
-		Replay replay = new Replay();
+		for (Replay replay : replays) {
 
-		replay.duration = 15000;
-		replay.add(new ReplayEntry(0, 0f, 2f));
-		replay.add(new ReplayEntry(2500, 15f, 2f));
-		replay.add(new ReplayEntry(5000, 30f, -7f));
-		replay.add(new ReplayEntry(7500, 60f, -7f));
-
-		Entity ghostSnake = entityFactory.instantiate(injector.getInstance(SnakeGhostTemplate.class), new ParametersWrapper() //
-				.put("spatial", new SpatialImpl(0f, 0f, 1f, 1f, 0f)) //
-				.put("replay", replay) //
-				);
-
-		tailComponent = Components.getTailComponent(ghostSnake);
-
-		for (int i = 0; i < 25; i++) {
-			Entity tailPart = entityFactory.instantiate(injector.getInstance(TailPartTemplate.class), new ParametersWrapper() //
-					.put("spatial", new SpatialImpl(-i, 0f, 1f, 1f, 0f)) //
-					.put("owner", ghostSnake) //
+			Entity ghostSnake = entityFactory.instantiate(injector.getInstance(SnakeGhostTemplate.class), new ParametersWrapper() //
+					.put("spatial", new SpatialImpl(0f, 0f, 1f, 1f, 0f)) //
+					.put("replay", replay) //
 					);
-			tailComponent.parts.add(tailPart);
+
+			tailComponent = Components.getTailComponent(ghostSnake);
+
+			for (int i = 0; i < 25; i++) {
+				Entity tailPart = entityFactory.instantiate(injector.getInstance(TailPartTemplate.class), new ParametersWrapper() //
+						.put("spatial", new SpatialImpl(-i, 0f, 1f, 1f, 0f)) //
+						.put("owner", ghostSnake) //
+						);
+				tailComponent.parts.add(tailPart);
+			}
+
 		}
+
 
 		// entityFactory.instantiate(injector.getInstance(TouchControllerTemplate.class), new ParametersWrapper() //
 		// .put("controller", controller) //
@@ -216,15 +216,10 @@ public class PlayGameState extends GameStateImpl {
 			Gdx.app.postRunnable(new Runnable() {
 				@Override
 				public void run() {
-					
 					GameState gameState = game.getGameState();
-					
 					gameState.dispose();
-					
 					gameState.getParameters().put("gameContentState", gameContentState);
-					
 					gameState.init();
-					
 				}
 			});
 		}
