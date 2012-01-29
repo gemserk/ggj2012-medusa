@@ -86,6 +86,7 @@ public class TopDownEnemyTemplate extends EntityTemplateImpl {
 	@Override
 	public void apply(Entity entity) {
 		Spatial spatial = parameters.get("spatial");
+		Sprite sprite = parameters.get("sprite");
 		Boolean movingDown = parameters.get("movingDown", Boolean.TRUE); 
 
 		Body body = bodyBuilder //
@@ -114,9 +115,9 @@ public class TopDownEnemyTemplate extends EntityTemplateImpl {
 
 		entity.addComponent(new GroupComponent(Groups.Enemies));
 
-		Sprite sprite = resourceManager.getResourceValue(GameResources.Sprites.Item);
+		
 
-		entity.addComponent(new SpriteComponent(sprite, 0.5f, 0.5f, Color.RED));
+		entity.addComponent(new SpriteComponent(sprite, 0.5f, 0.5f, Color.WHITE));
 		entity.addComponent(new RenderableComponent(-1, true));
 
 		entity.addComponent(new LinearVelocityLimitComponent(10f));
