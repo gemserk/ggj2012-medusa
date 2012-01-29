@@ -156,10 +156,20 @@ public class PlayGameState extends GameStateImpl {
 		replay.add(new ReplayEntry(5000, 30f, -7f));
 		replay.add(new ReplayEntry(7500, 60f, -7f));
 
-		entityFactory.instantiate(injector.getInstance(SnakeGhostTemplate.class), new ParametersWrapper() //
+		Entity ghostSnake = entityFactory.instantiate(injector.getInstance(SnakeGhostTemplate.class), new ParametersWrapper() //
 				.put("spatial", new SpatialImpl(0f, 0f, 1f, 1f, 0f)) //
 				.put("replay", replay) //
 				);
+		
+		tailComponent = Components.getTailComponent(ghostSnake);
+
+		for (int i = 0; i < 25; i++) {
+			Entity tailPart = entityFactory.instantiate(injector.getInstance(TailPartTemplate.class), new ParametersWrapper() //
+					.put("spatial", new SpatialImpl(-i, 0f, 1f, 1f, 0f)) //
+					.put("owner", ghostSnake) //
+					);
+			tailComponent.parts.add(tailPart);
+		}
 
 		// entityFactory.instantiate(injector.getInstance(TouchControllerTemplate.class), new ParametersWrapper() //
 		// .put("controller", controller) //
