@@ -4,6 +4,7 @@ import uy.globalgamejam.medusa.LevelGeneratorTemplate.Element;
 import uy.globalgamejam.medusa.components.Components;
 import uy.globalgamejam.medusa.components.Controller;
 import uy.globalgamejam.medusa.components.TailComponent;
+import uy.globalgamejam.medusa.replay.ReplayManager;
 import uy.globalgamejam.medusa.templates.AttachedCameraTemplate;
 import uy.globalgamejam.medusa.templates.KeyboardControllerTemplate;
 import uy.globalgamejam.medusa.templates.LevelInstantiator;
@@ -109,6 +110,7 @@ public class PlayGameState extends GameStateImpl {
 		injector.bind("bodyBuilder", new BodyBuilder(physicsWorld));
 		injector.bind("synchronizer", synchronizer);
 		injector.bind("mesh2dBuilder", new Mesh2dBuilder());
+		injector.bind("replayManager", new ReplayManager());
 
 		scene.addUpdateSystem(new ScriptSystem());
 		scene.addUpdateSystem(new TagSystem());

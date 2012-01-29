@@ -8,6 +8,7 @@ import uy.globalgamejam.medusa.components.EngineComponent;
 import uy.globalgamejam.medusa.components.TailComponent;
 import uy.globalgamejam.medusa.scripts.CharacterMovementScript;
 import uy.globalgamejam.medusa.scripts.EngineScript;
+import uy.globalgamejam.medusa.scripts.ReplayRecorderScript;
 import uy.globalgamejam.medusa.tags.Groups;
 import uy.globalgamejam.medusa.tags.Tags;
 
@@ -150,21 +151,21 @@ public class SnakeCharacterTemplate extends EntityTemplateImpl {
 		entity.addComponent(new PhysicsComponent(body));
 		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, spatial)));
 
-		// Sprite sprite = resourceManager.getResourceValue(GameResources.Sprites.Character);
-		// entity.addComponent(new SpriteComponent(sprite, 0.5f, 0.5f, Color.WHITE));
-		// entity.addComponent(new RenderableComponent(0, true));
-
 		Controller controller = parameters.get("controller");
 		entity.addComponent(new ControllerComponent(controller));
 
 		entity.addComponent(new EngineComponent(8f));
 		entity.addComponent(new TailComponent());
+		
+		ReplayRecorderScript replayRecorderScript = new ReplayRecorderScript();
+		injector.injectMembers(replayRecorderScript);
 
 		entity.addComponent(new ScriptComponent( //
 				injector.getInstance(CharacterMovementScript.class), //
 				injector.getInstance(EngineScript.class), //
 				injector.getInstance(EatEnemiesScript.class), //
-				injector.getInstance(MoveTailScript.class) //
+				injector.getInstance(MoveTailScript.class), //
+				replayRecorderScript //
 		));
 
 	}
