@@ -11,14 +11,14 @@ import uy.globalgamejam.medusa.scripts.RemoveOldEntitiesScript;
 import uy.globalgamejam.medusa.tags.Groups;
 import uy.globalgamejam.medusa.tags.Tags;
 import uy.globalgamejam.medusa.templates.AttachedCameraTemplate;
+import uy.globalgamejam.medusa.templates.WorldLimitsSpawnerTemplate;
 import uy.globalgamejam.medusa.templates.KeyboardControllerTemplate;
 import uy.globalgamejam.medusa.templates.LevelInstantiator;
 import uy.globalgamejam.medusa.templates.ObstacleSpawnerTemplate2;
 import uy.globalgamejam.medusa.templates.SnakeCharacterTemplate;
 import uy.globalgamejam.medusa.templates.SnakeGhostTemplate;
-import uy.globalgamejam.medusa.templates.StaticSpriteEntityTemplate;
 import uy.globalgamejam.medusa.templates.TailPartTemplate;
-import uy.globalgamejam.medusa.templates.WorldLimitsSpawnerTemplate;
+import uy.globalgamejam.medusa.templates.BackgroundSpawnerTemplate;
 
 import com.artemis.Entity;
 import com.artemis.World;
@@ -60,6 +60,7 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
+import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
@@ -310,26 +311,21 @@ public class PlayGameState extends GameStateImpl {
 			}
 		});
 
-		entityFactory.instantiate(injector.getInstance(StaticSpriteEntityTemplate.class), new ParametersWrapper() //
-				.put("spatial", new SpatialImpl(512f * 0, 0f, 512f, 480f, 0f)) //
-				.put("spriteId", GameResources.Sprites.Background01) //
-				.put("center", new Vector2(0f, 0f)) //
-				.put("layer", -1000) //
-				);
+		entityFactory.instantiate(new EntityTemplateImpl() {
+			@Override
+			public void apply(Entity entity) {
+				entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
+					@Override
+					public void update(World world, Entity e) {
+						Entity mainCharacter = world.getTagManager().getEntity(Tags.MainCharacter);
+						Spatial spatial = Components.getSpatialComponent(mainCharacter).getSpatial();
+						backgroundCamera.move(spatial.getX() * 5f, 0f);
+					}
+				}));
+			}
+		});
 
-		entityFactory.instantiate(injector.getInstance(StaticSpriteEntityTemplate.class), new ParametersWrapper() //
-				.put("spatial", new SpatialImpl(512f * 1, 0f, 512f, 480f, 0f)) //
-				.put("spriteId", GameResources.Sprites.Background02) //
-				.put("center", new Vector2(0f, 0f)) //
-				.put("layer", -1000) //
-				);
-
-		entityFactory.instantiate(injector.getInstance(StaticSpriteEntityTemplate.class), new ParametersWrapper() //
-				.put("spatial", new SpatialImpl(512f * 2, 0f, 512f, 480f, 0f)) //
-				.put("spriteId", GameResources.Sprites.Background03) //
-				.put("center", new Vector2(0f, 0f)) //
-				.put("layer", -1000) //
-				);
+		entityFactory.instantiate(injector.getInstance(BackgroundSpawnerTemplate.class), new ParametersWrapper());
 
 	}
 
