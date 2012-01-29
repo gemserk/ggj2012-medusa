@@ -67,7 +67,7 @@ public class FixedEnemyTemplate extends EntityTemplateImpl {
 
 		Sprite sprite = resourceManager.getResourceValue(GameResources.Sprites.Item);
 
-		entity.addComponent(new SpriteComponent(sprite, 0.5f, 0.5f, Color.ORANGE));
+		entity.addComponent(new SpriteComponent(sprite, 0.5f, 0.5f, Color.RED));
 		entity.addComponent(new RenderableComponent(-1, true));
 
 	}

@@ -1,5 +1,5 @@
 input="images"
-output="../ufo-desktop/src/main/resources/data/images"
+output="../medusa-desktop/src/main/resources/data/images"
 
 alias=true
 alphaThreshold=0

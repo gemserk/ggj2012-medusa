@@ -21,6 +21,8 @@ public class GameResources extends LibgdxResourceBuilder {
 
 		public static final String Obstacle0 = "Obstacle0Sprite";
 		public static final String Obstacle1 = "Obstacle1Sprite";
+		public static final String Muro1 = "Muro1";
+		public static final String Muro2 = "Muro2";
 	}
 
 	public static class FixtureAtlas {
@@ -28,7 +30,7 @@ public class GameResources extends LibgdxResourceBuilder {
 		public static final String Obstacles = "ObstaclesFixtureAtlas";
 
 	}
-	
+
 	public static class XmlDocuments {
 
 		public static final String Obstacles = "ObstaclesXmlDocument";
@@ -59,9 +61,28 @@ public class GameResources extends LibgdxResourceBuilder {
 		resource(Sprites.Obstacle1, sprite2() //
 				.textureAtlas(TextureAtlases.Images, "obstacle-02"));
 
-		resource(FixtureAtlas.Obstacles, new FixtureAtlasResourceBuilder() //
-				.shapeFile(internal("data/fixtures/obstacles.bin")));
 		
+		for(int i=1;i < 8; i++){
+			resource("Muro" + i + "a", sprite2() //
+					.textureAtlas(TextureAtlases.Images, "muro" + i + "a"));
+			
+			resource("Muro" + i + "b", sprite2() //
+					.textureAtlas(TextureAtlases.Images, "muro" + i + "a").flip(true, false));
+		}
+		
+		
+//		resource(Sprites.Muro1, sprite2() //
+//				.textureAtlas(TextureAtlases.Images, "muro1"));
+//
+//		resource(Sprites.Muro2, sprite2() //
+//				.textureAtlas(TextureAtlases.Images, "muro1").flip(true, false));
+		
+		resource(FixtureAtlas.Obstacles, new FixtureAtlasResourceBuilder() //
+				.shapeFile(internal("data/fixtures/figuras")));
+
+//		resource(FixtureAtlas.Obstacles, new FixtureAtlasResourceBuilder() //
+//				.shapeFile(internal("data/fixtures/obstacles.bin")));
+
 		resource(XmlDocuments.Obstacles, xmlDocument("data/fixtures/obstacles.svg"));
 
 	}
