@@ -5,6 +5,7 @@ import uy.globalgamejam.medusa.components.Controller;
 import uy.globalgamejam.medusa.components.ControllerComponent;
 import uy.globalgamejam.medusa.components.EngineComponent;
 import uy.globalgamejam.medusa.components.TailComponent;
+import uy.globalgamejam.medusa.resources.GameResources.Sprites;
 import uy.globalgamejam.medusa.scripts.CharacterMovementScript;
 import uy.globalgamejam.medusa.scripts.EatEnemiesScript;
 import uy.globalgamejam.medusa.scripts.EngineScript;
@@ -13,11 +14,15 @@ import uy.globalgamejam.medusa.scripts.ReplayRecorderScript;
 import uy.globalgamejam.medusa.tags.Tags;
 
 import com.artemis.Entity;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
+import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
+import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.components.TagComponent;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
@@ -48,6 +53,7 @@ public class SnakeCharacterTemplate extends EntityTemplateImpl {
 	public void apply(Entity entity) {
 		Spatial spatial = parameters.get("spatial");
 
+		spatial.setSize(2f,2f);
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.circleShape(0.5f) //
@@ -68,6 +74,11 @@ public class SnakeCharacterTemplate extends EntityTemplateImpl {
 
 		entity.addComponent(new EngineComponent(10f));
 		entity.addComponent(new TailComponent());
+		
+		Sprite sprite = resourceManager.getResourceValue(Sprites.Cabeza);
+
+		entity.addComponent(new SpriteComponent(sprite, 0.5f, 0.5f, Color.WHITE));
+		entity.addComponent(new RenderableComponent(5, true));
 		
 		ReplayRecorderScript replayRecorderScript = new ReplayRecorderScript();
 		injector.injectMembers(replayRecorderScript);

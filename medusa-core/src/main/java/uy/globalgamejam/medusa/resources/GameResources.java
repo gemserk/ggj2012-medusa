@@ -32,6 +32,8 @@ public class GameResources extends LibgdxResourceBuilder {
 		public static final String BottomBorder = "BottomBorderSprite";
 		public static final String TopBorder = "TopBorderSprite";
 		
+		public static final String Cabeza = "Cabeza";
+		public static final String Cuerpo = "Cuerpo";
 	}
 
 	public static class Animations {
@@ -111,6 +113,15 @@ public class GameResources extends LibgdxResourceBuilder {
 				.flip(false, true) //
 				.textureAtlas(TextureAtlases.Images, "border"));
 
+		
+		resource(Sprites.Cabeza, sprite2() //
+				.textureAtlas(TextureAtlases.Images, "cabeza"));
+		
+		
+		resource(Sprites.Cuerpo, sprite2() //
+				.textureAtlas(TextureAtlases.Images, "cuerpo"));
+		
+		
 		// resource(Sprites.Muro1, sprite2() //
 		// .textureAtlas(TextureAtlases.Images, "muro1"));
 		//

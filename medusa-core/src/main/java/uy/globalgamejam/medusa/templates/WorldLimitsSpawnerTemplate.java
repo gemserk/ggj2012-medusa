@@ -91,7 +91,7 @@ public class WorldLimitsSpawnerTemplate extends EntityTemplateImpl {
 				Entity entity = itemStore.get(i);
 				Spatial spatial = Components.getSpatialComponent(entity).getSpatial();
 
-				if (spatial.getX() < mainCharacterSpatial.getX() - 15f) {
+				if (spatial.getX() < mainCharacterSpatial.getX() - 25f) {
 					float x = spatial.getX();
 					x += itemStore.size() * spatial.getWidth();
 					spatial.setPosition(x, spatial.getY());

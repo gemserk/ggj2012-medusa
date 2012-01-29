@@ -56,7 +56,7 @@ public class WorldLimitTemplate extends EntityTemplateImpl {
 		
 		String spriteId = parameters.get("sprite");
 		
-		entity.addComponent(new GroupComponent(Groups.Obstacles));
+		entity.addComponent(new GroupComponent(Groups.WorldBounds));
 
 		entity.addComponent(new PhysicsComponent(body));
 		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, spatial)));
