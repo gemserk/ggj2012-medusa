@@ -1,5 +1,6 @@
 package uy.globalgamejam.medusa;
 
+import uy.globalgamejam.medusa.replay.ReplayManager;
 import uy.globalgamejam.medusa.resources.GameResources;
 
 import com.badlogic.gdx.Gdx;
@@ -65,7 +66,7 @@ public class Game extends ApplicationListenerGameStateBasedImpl {
 
 					accumulator -= dt;
 				}
-				
+
 				accumulatorLogger.deltas.add(realUpdateCount);
 
 				float alpha = accumulator / dt;
@@ -99,9 +100,18 @@ public class Game extends ApplicationListenerGameStateBasedImpl {
 
 		playGameState = fixedTimestep(internalState(playGameState));
 		gameOverGameState = fixedTimestep(internalState(gameOverGameState));
-		
+
 		GameContentState gameContentState = new GameContentState();
+
+		LevelGeneratorTemplate levelGenerator = injector.getInstance(LevelGeneratorTemplate.class);
 		
+		float scale = 24f;
+		float worldScale = scale * 1f;
+		gameContentState.worldScale = worldScale;
+		
+		gameContentState.elements = levelGenerator.generate(Gdx.graphics.getHeight() / (worldScale * 2), worldScale);
+		gameContentState.replayManager = new ReplayManager();
+
 		playGameState.getParameters().put("gameContentState", gameContentState);
 
 		setGameState(playGameState);
@@ -137,9 +147,9 @@ public class Game extends ApplicationListenerGameStateBasedImpl {
 
 		shapeRenderer.setProjectionMatrix(loggerCamera.getCombinedMatrix());
 
-//		renderTimeLoggerGraph(Color.RED, deltaTimeLogger, 1f / 60f, 10f * 1000f, Gdx.graphics.getHeight() * 0.8f);
-//		// renderTimeLoggerGraph(Color.ORANGE, averageDeltaTimeLogger, 1f / 60f, 10f * 1000f, Gdx.graphics.getHeight() * 0.5f);
-//		renderTimeLoggerGraph(Color.GREEN, accumulatorLogger, 0f, 10f, Gdx.graphics.getHeight() * 0.3f);
+		// renderTimeLoggerGraph(Color.RED, deltaTimeLogger, 1f / 60f, 10f * 1000f, Gdx.graphics.getHeight() * 0.8f);
+		// // renderTimeLoggerGraph(Color.ORANGE, averageDeltaTimeLogger, 1f / 60f, 10f * 1000f, Gdx.graphics.getHeight() * 0.5f);
+		// renderTimeLoggerGraph(Color.GREEN, accumulatorLogger, 0f, 10f, Gdx.graphics.getHeight() * 0.3f);
 
 		averageDeltaTimeLogger.update();
 		deltaTimeLogger.update();
@@ -155,7 +165,7 @@ public class Game extends ApplicationListenerGameStateBasedImpl {
 		shapeRenderer.setColor(color);
 		shapeRenderer.begin(ShapeType.Line);
 		int index = 0;
-		
+
 		for (int i = deltas.size - steps; i < deltas.size; i++) {
 			float nextY = y - (midPoint - deltas.get(i)) * scale;
 			float x1 = stepX * (index - 1);

@@ -9,5 +9,8 @@ public class GameContentState {
 	
 	Array<Element> elements;
 	ReplayManager replayManager;
+	
+	public float worldScale;
+	
 
 }

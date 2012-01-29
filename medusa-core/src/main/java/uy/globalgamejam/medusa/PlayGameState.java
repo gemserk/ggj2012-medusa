@@ -1,6 +1,5 @@
 package uy.globalgamejam.medusa;
 
-import uy.globalgamejam.medusa.LevelGeneratorTemplate.Element;
 import uy.globalgamejam.medusa.components.Components;
 import uy.globalgamejam.medusa.components.Controller;
 import uy.globalgamejam.medusa.components.Replay;
@@ -22,7 +21,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import com.gemserk.animation4j.transitions.sync.Synchronizer;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.events.EventManager;
@@ -84,15 +82,11 @@ public class PlayGameState extends GameStateImpl {
 
 		GameContentState gameContentState = getParameters().get("gameContentState");
 
-		float gameScale = Gdx.graphics.getHeight() / 480f;
-
 		normalCamera = new Libgdx2dCameraTransformImpl(0f, 0f);
 		normalCamera.zoom(1f);
 
-		float scale = 24f;
-
 		worldCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() * 0.15f, Gdx.graphics.getHeight() * 0.5f);
-		float worldScale = scale * gameScale;
+		float worldScale = gameContentState.worldScale;
 		worldCamera.zoom(worldScale);
 
 		worldRealCamera = new CameraImpl(0, 0, worldScale, 0f);
@@ -117,8 +111,8 @@ public class PlayGameState extends GameStateImpl {
 		injector.bind("synchronizer", synchronizer);
 		injector.bind("mesh2dBuilder", new Mesh2dBuilder());
 		injector.bind("replayManager", new ReplayManager());
-		injector.bind("maxYCoord", (Float) (Gdx.graphics.getHeight() / (worldScale * 2)));
-		injector.bind("worldScale", (Float) worldScale);
+		// injector.bind("maxYCoord", (Float) (Gdx.graphics.getHeight() / (worldScale * 2)));
+		// injector.bind("worldScale", (Float) worldScale);
 
 		scene.addUpdateSystem(new ScriptSystem());
 		scene.addUpdateSystem(new TagSystem());
@@ -187,11 +181,12 @@ public class PlayGameState extends GameStateImpl {
 
 		// entityFactory.instantiate(injector.getInstance(ItemSpawnerTemplate.class));
 
-		LevelGeneratorTemplate levelGenerator = injector.getInstance(LevelGeneratorTemplate.class);
-		Array<Element> elements = levelGenerator.generate();
-		System.out.println("Elements: " + elements.size);
+		// LevelGeneratorTemplate levelGenerator = injector.getInstance(LevelGeneratorTemplate.class);
+		// Array<Element> elements = levelGenerator.generate();
+		// System.out.println("Elements: " + elements.size);
 
-		entityFactory.instantiate(injector.getInstance(LevelInstantiator.class), new ParametersWrapper().put("elements", elements));
+		entityFactory.instantiate(injector.getInstance(LevelInstantiator.class), //
+				new ParametersWrapper().put("elements", gameContentState.elements));
 
 		entityFactory.instantiate(injector.getInstance(AttachedCameraTemplate.class), new ParametersWrapper() //
 				.put("libgdx2dCamera", worldCamera) //

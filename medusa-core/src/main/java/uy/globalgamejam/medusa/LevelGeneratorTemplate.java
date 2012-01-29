@@ -26,12 +26,10 @@ public class LevelGeneratorTemplate {
 	}
 
 	Injector injector;
-	Float maxYCoord;
-	Float worldScale;
 
 	ResourceManager<String> resourceManager;
 
-	public Array<Element> generate() {
+	public Array<Element> generate(float maxYCoord, float worldScale) {
 
 		initializeObstacles();
 		float GENERATION_BETWEEN_ELEMENTS = 50;
