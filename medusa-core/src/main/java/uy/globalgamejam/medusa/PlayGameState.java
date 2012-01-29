@@ -90,7 +90,7 @@ public class PlayGameState extends GameStateImpl {
 	private Camera worldRealCamera;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 	private GameContentState gameContentState;
-
+	
 	@Override
 	public void init() {
 		final Injector injector = this.injector.createChildInjector();
@@ -274,7 +274,6 @@ public class PlayGameState extends GameStateImpl {
 				}));
 			}
 		});
-
 	}
 
 	@Override
