@@ -1,5 +1,7 @@
 package uy.globalgamejam.medusa.templates;
 
+import java.util.ArrayList;
+
 import uy.globalgamejam.medusa.Collisions;
 import uy.globalgamejam.medusa.components.Components;
 import uy.globalgamejam.medusa.components.Replay;
@@ -18,12 +20,15 @@ import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
+import com.gemserk.commons.artemis.templates.EntityFactory;
+import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.commons.reflection.Injector;
+import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.resources.ResourceManager;
 
 public class SnakeGhostTemplate extends EntityTemplateImpl {
@@ -44,6 +49,9 @@ public class SnakeGhostTemplate extends EntityTemplateImpl {
 
 	public static class ReplayMovementScript extends ScriptJavaImpl {
 
+		EntityFactory entityFactory;
+		Injector injector;
+
 		// uses the replay data to move the snake
 
 		private float time;
@@ -54,18 +62,18 @@ public class SnakeGhostTemplate extends EntityTemplateImpl {
 		private int currentFrame;
 
 		private boolean finished;
-		
+
 		public ReplayMovementScript() {
 			this(0f);
 		}
-		
+
 		public ReplayMovementScript(float offset) {
 			time += offset;
 		}
 
 		@Override
 		public void init(World world, Entity e) {
-//			time = 0;
+			// time = 0;
 			finished = false;
 			currentFrame = 0;
 			ReplayComponent replayComponent = e.getComponent(ReplayComponent.class);
@@ -76,21 +84,35 @@ public class SnakeGhostTemplate extends EntityTemplateImpl {
 
 			SpatialComponent spatialComponent = Components.getSpatialComponent(e);
 			Spatial spatial = spatialComponent.getSpatial();
-			
+
 			ReplayComponent replayComponent = e.getComponent(ReplayComponent.class);
 
 			if (finished) {
 				// removes entity if replay is finished.
+
+				TailComponent tailComponent = Components.getTailComponent(e);
+
+				ArrayList<Entity> parts = tailComponent.parts;
+
+				EntityTemplate obstacleTailPartTemplate = injector.getInstance(ObstacleTailPartTemplate.class);
+
+				for (Entity tailPart : parts) {
+					entityFactory.instantiate(obstacleTailPartTemplate, new ParametersWrapper() //
+							.put("spatial", Components.getSpatialComponent(tailPart).getSpatial()) //
+							);
+					tailPart.delete();
+				}
+
 				e.delete();
 				return;
 			}
 
-//			if (Math.abs(currentReplayEntry.x - previousReplayEntry.x) > 1f || Math.abs(currentReplayEntry.y - previousReplayEntry.y) > 1f) {
-//				// in this case, do not interpolate and move to the next frame...
-//				time = 0;
-//				nextReplayFrame(replayComponent.replay);
-//				return;
-//			}
+			// if (Math.abs(currentReplayEntry.x - previousReplayEntry.x) > 1f || Math.abs(currentReplayEntry.y - previousReplayEntry.y) > 1f) {
+			// // in this case, do not interpolate and move to the next frame...
+			// time = 0;
+			// nextReplayFrame(replayComponent.replay);
+			// return;
+			// }
 
 			float t = (float) time / (float) getTimeBetweenFrames();
 
@@ -120,7 +142,6 @@ public class SnakeGhostTemplate extends EntityTemplateImpl {
 			previousReplayEntry = replay.getEntry(currentFrame - 1);
 			currentReplayEntry = replay.getEntry(currentFrame);
 		}
-
 
 	}
 
@@ -158,10 +179,15 @@ public class SnakeGhostTemplate extends EntityTemplateImpl {
 		entity.addComponent(new TailComponent());
 
 		entity.addComponent(new ReplayComponent(replay));
+
+		ReplayMovementScript replayMovementScript = new ReplayMovementScript(1f);
+
+		injector.injectMembers(replayMovementScript);
+
 		entity.addComponent(new ScriptComponent( //
 				injector.getInstance(EatEnemiesScript.class), //
 				injector.getInstance(MoveTailScript.class), //
-				new ReplayMovementScript(1f)));
+				replayMovementScript));
 
 	}
 
