@@ -6,6 +6,7 @@ import uy.globalgamejam.medusa.components.Components;
 import uy.globalgamejam.medusa.components.Controller;
 import uy.globalgamejam.medusa.components.Replay;
 import uy.globalgamejam.medusa.components.TailComponent;
+import uy.globalgamejam.medusa.resources.GameResources;
 import uy.globalgamejam.medusa.scripts.RemoveOldEntitiesScript;
 import uy.globalgamejam.medusa.tags.Groups;
 import uy.globalgamejam.medusa.tags.Tags;
@@ -16,6 +17,7 @@ import uy.globalgamejam.medusa.templates.ObstacleSpawnerTemplate2;
 import uy.globalgamejam.medusa.templates.SnakeCharacterTemplate;
 import uy.globalgamejam.medusa.templates.SnakeGhostTemplate;
 import uy.globalgamejam.medusa.templates.TailPartTemplate;
+import uy.globalgamejam.medusa.templates.WorldLimitsSpawnerTemplate;
 
 import com.artemis.Entity;
 import com.artemis.World;
@@ -90,7 +92,7 @@ public class PlayGameState extends GameStateImpl {
 	private Camera worldRealCamera;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 	private GameContentState gameContentState;
-	
+
 	@Override
 	public void init() {
 		final Injector injector = this.injector.createChildInjector();
@@ -229,6 +231,14 @@ public class PlayGameState extends GameStateImpl {
 			}
 		});
 
+		entityFactory.instantiate(injector.getInstance(WorldLimitsSpawnerTemplate.class), new ParametersWrapper() //
+				.put("spriteId", GameResources.Sprites.BottomBorder) //
+				.put("y", -gameContentState.maxYCoord));
+
+		entityFactory.instantiate(injector.getInstance(WorldLimitsSpawnerTemplate.class), new ParametersWrapper() //
+				.put("spriteId", GameResources.Sprites.TopBorder) //
+				.put("y", gameContentState.maxYCoord));
+
 		entityFactory.instantiate(new EntityTemplateImpl() {
 			@Override
 			public void apply(Entity entity) {
@@ -254,8 +264,8 @@ public class PlayGameState extends GameStateImpl {
 
 							if (!Groups.Obstacles.equals(groupComponent.group))
 								continue;
-							
-							if(Components.getSpatialComponent(mainCharacter).getPosition().x < 0.5f)
+
+							if (Components.getSpatialComponent(mainCharacter).getPosition().x < 0.5f)
 								gameContentState.init();
 
 							Gdx.app.postRunnable(new Runnable() {
@@ -293,7 +303,7 @@ public class PlayGameState extends GameStateImpl {
 				}
 			});
 		}
-		
+
 		if (inputDevicesMonitor.getButton("newLevel").isReleased()) {
 			Gdx.app.postRunnable(new Runnable() {
 				@Override

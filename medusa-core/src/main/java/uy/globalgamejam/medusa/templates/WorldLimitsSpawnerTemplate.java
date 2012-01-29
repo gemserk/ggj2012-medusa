@@ -1,17 +1,13 @@
 package uy.globalgamejam.medusa.templates;
 
-
-import uy.globalgamejam.medusa.Events;
 import uy.globalgamejam.medusa.components.Components;
 import uy.globalgamejam.medusa.tags.Tags;
 
 import com.artemis.Entity;
 import com.artemis.World;
-import com.badlogic.gdx.math.MathUtils;
 import com.gemserk.commons.artemis.components.ScriptComponent;
-import com.gemserk.commons.artemis.events.Event;
+import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.events.EventManager;
-import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
@@ -23,7 +19,7 @@ import com.gemserk.commons.utils.Store;
 import com.gemserk.commons.utils.StoreFactory;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 
-public class ItemSpawnerTemplate extends EntityTemplateImpl {
+public class WorldLimitsSpawnerTemplate extends EntityTemplateImpl {
 
 	Injector injector;
 
@@ -31,27 +27,54 @@ public class ItemSpawnerTemplate extends EntityTemplateImpl {
 		this.injector = injector;
 	}
 
-	public static class ItemSpawnerScript extends ScriptJavaImpl {
+	public static class WorldLimitsSpawnerScript extends ScriptJavaImpl {
 
 		Injector injector;
 		EntityFactory entityFactory;
 		EventManager eventManager;
 
 		float lastObstacleX = 0f;
+		float y;
+		
+		String spriteId;
 
 		Store<Entity> itemStore = new EntityStore(new StoreFactory<Entity>() {
 
 			@Override
 			public Entity createObject() {
-				return entityFactory.instantiate(injector.getInstance(ItemTemplate.class), new ParametersWrapper() //
-						.put("spatial", new SpatialImpl(0f, 0f, 1f, 1f, 0f)) //
+				return entityFactory.instantiate(injector.getInstance(WorldLimitTemplate.class), new ParametersWrapper() //
+						.put("spatial", new SpatialImpl(0f, 0f, 21.33f, 0.5f, 0f)) //
+						.put("sprite", spriteId) //
 						);
 			}
 		});
+		
+		public WorldLimitsSpawnerScript(String spriteId, float y) {
+			this.spriteId = spriteId;
+			this.y = y;
+		}
 
 		@Override
 		public void init(World world, Entity e) {
 			lastObstacleX = 0f;
+
+			int items = 5;
+
+			for (int i = 0; i < items; i++) {
+				float x = 0f;
+
+				Entity item = itemStore.get();
+
+				Spatial spatial = Components.getSpatialComponent(item).getSpatial();
+				spatial.setPosition(x + i * spatial.getWidth(), y);
+				spatial.setAngle(0f);
+				
+				SpriteComponent spriteComponent = Components.getSpriteComponent(item);
+				spriteComponent.getCenter().set(0.5f, y < 0 ? 0f : 1f);
+				
+				lastObstacleX += spatial.getWidth();
+			}
+
 		}
 
 		@Override
@@ -64,51 +87,30 @@ public class ItemSpawnerTemplate extends EntityTemplateImpl {
 
 			Spatial mainCharacterSpatial = Components.getSpatialComponent(mainCharacter).getSpatial();
 
-			if (mainCharacterSpatial.getX() > lastObstacleX) {
+			for (int i = 0; i < itemStore.size(); i++) {
+				Entity entity = itemStore.get(i);
+				Spatial spatial = Components.getSpatialComponent(entity).getSpatial();
 
-				lastObstacleX += 50f;
-
-				int items = MathUtils.random(3, 8);
-
-				for (int i = 0; i < items; i++) {
-					float x = MathUtils.random(0f,40f);
-					float y = MathUtils.random(-10f, 10f);
-
-					lastObstacleX += x;
-
-					Entity item 
-					= itemStore.get();
-
-					Spatial spatial = Components.getSpatialComponent(item).getSpatial();
-					spatial.setPosition(lastObstacleX, y);
-					spatial.setAngle(MathUtils.random(0f, 360f));
-
+				if (spatial.getX() < mainCharacterSpatial.getX() - 15f) {
+					float x = spatial.getX();
+					x += itemStore.size() * spatial.getWidth();
+					spatial.setPosition(x, spatial.getY());
 				}
 
 			}
 
-			for (int i = 0; i < itemStore.size(); i++) {
-				Entity item = itemStore.get(i);
-
-				Spatial spatial = Components.getSpatialComponent(item).getSpatial();
-
-				if (spatial.getX() < mainCharacterSpatial.getX() - 10f)
-					itemStore.free(item);
-			}
-
-		}
-
-		@Handles(ids = Events.ItemGrabbed)
-		public void itemGrabbed(Event event) {
-			Entity item = (Entity) event.getSource();
-			itemStore.free(item);
 		}
 
 	}
 
 	@Override
 	public void apply(Entity entity) {
-		entity.addComponent(new ScriptComponent(injector.getInstance(ItemSpawnerScript.class)));
+		String spriteId = parameters.get("spriteId");
+		Float y = parameters.get("y");
+		
+		WorldLimitsSpawnerScript worldLimitsSpawnerScript = new WorldLimitsSpawnerScript(spriteId, y);
+		injector.injectMembers(worldLimitsSpawnerScript);
+		entity.addComponent(new ScriptComponent(worldLimitsSpawnerScript));
 	}
 
 }

@@ -17,18 +17,18 @@ muro3a
   orig: 332, 306
   offset: 0, 0
   index: -1
-muro4a
-  rotate: false
-  xy: 683, 2
-  size: 333, 280
-  orig: 333, 280
-  offset: 0, 0
-  index: -1
 muro6a
   rotate: false
   xy: 2, 334
   size: 400, 250
   orig: 400, 250
+  offset: 0, 0
+  index: -1
+muro4a
+  rotate: false
+  xy: 683, 2
+  size: 333, 280
+  orig: 333, 280
   offset: 0, 0
   index: -1
 muro2a
@@ -52,14 +52,14 @@ muro1a
   orig: 376, 183
   offset: 0, 0
   index: -1
-character
+item
   rotate: false
   xy: 746, 334
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
-item
+character
   rotate: false
   xy: 876, 334
   size: 128, 128
@@ -73,13 +73,6 @@ obstaculo1a
   orig: 113, 113
   offset: 0, 0
   index: -1
-enemigo1a
-  rotate: false
-  xy: 404, 581
-  size: 154, 83
-  orig: 154, 83
-  offset: 0, 0
-  index: -1
 extra2a
   rotate: false
   xy: 876, 464
@@ -89,44 +82,37 @@ extra2a
   index: -1
 enemigo1a
   rotate: false
-  xy: 404, 666
+  xy: 404, 581
   size: 139, 83
   orig: 139, 83
   offset: 0, 0
   index: 1
 enemigo1a
   rotate: false
-  xy: 404, 751
+  xy: 404, 666
   size: 139, 82
   orig: 139, 82
   offset: 0, 0
   index: 2
 enemigo1a
   rotate: false
-  xy: 404, 835
+  xy: 404, 750
   size: 139, 82
   orig: 139, 82
   offset: 0, 0
   index: 3
 extra3a
   rotate: false
-  xy: 404, 919
+  xy: 404, 834
   size: 71, 57
   orig: 71, 57
   offset: 0, 0
   index: -1
 extra1a
   rotate: false
-  xy: 477, 919
+  xy: 404, 893
   size: 71, 50
   orig: 71, 50
-  offset: 0, 0
-  index: -1
-enemigo2a
-  rotate: false
-  xy: 477, 971
-  size: 50, 50
-  orig: 50, 50
   offset: 0, 0
   index: -1
 enemigo2a
@@ -164,3 +150,15 @@ enemigo3a
   orig: 38, 22
   offset: 0, 0
   index: 1
+
+world2.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+border
+  rotate: false
+  xy: 2, 2
+  size: 512, 12
+  orig: 512, 12
+  offset: 0, 0
+  index: -1

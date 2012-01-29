@@ -28,6 +28,10 @@ public class GameResources extends LibgdxResourceBuilder {
 		public static final String Astronauta = "Astronauta";
 		public static final String Nave = "Nave";
 		public static final String Satelite = "Satelite";
+		
+		public static final String BottomBorder = "BottomBorderSprite";
+		public static final String TopBorder = "TopBorderSprite";
+		
 	}
 
 	public static class Animations {
@@ -99,7 +103,14 @@ public class GameResources extends LibgdxResourceBuilder {
 		
 		resource(Sprites.Satelite, sprite2() //
 				.textureAtlas(TextureAtlases.Images, "extra3a"));
-		
+
+		resource(Sprites.BottomBorder, sprite2() //
+				.textureAtlas(TextureAtlases.Images, "border"));
+
+		resource(Sprites.TopBorder, sprite2() //
+				.flip(false, true) //
+				.textureAtlas(TextureAtlases.Images, "border"));
+
 		// resource(Sprites.Muro1, sprite2() //
 		// .textureAtlas(TextureAtlases.Images, "muro1"));
 		//
