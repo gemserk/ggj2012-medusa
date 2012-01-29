@@ -18,6 +18,8 @@ import uy.globalgamejam.medusa.templates.ObstacleSpawnerTemplate2;
 import uy.globalgamejam.medusa.templates.SnakeCharacterTemplate;
 import uy.globalgamejam.medusa.templates.SnakeGhostTemplate;
 import uy.globalgamejam.medusa.templates.TailPartTemplate;
+import uy.globalgamejam.medusa.templates.WorldLimitsSpawnerTemplate;
+import uy.globalgamejam.medusa.templates.SnakeCharacterTemplate.DangerScript;
 import uy.globalgamejam.medusa.templates.BackgroundSpawnerTemplate;
 
 import com.artemis.Entity;
@@ -271,9 +273,15 @@ public class PlayGameState extends GameStateImpl {
 
 							if (groupComponent == null)
 								continue;
+							
+							TailComponent tailComponent = Components.getTailComponent(mainCharacter);
 
-							if (!Groups.Obstacles.equals(groupComponent.group) && !Groups.WorldBounds.equals(groupComponent.group))
+//							if (!Groups.Obstacles.equals(groupComponent.group) && !Groups.WorldBounds.equals(groupComponent.group))
+//								continue;
+								
+							if(Groups.Enemies.equals(groupComponent.group) && tailComponent.parts.size()>DangerScript.DANGER_TAIL_NUMBER)	
 								continue;
+							
 							
 							if(Components.getSpatialComponent(mainCharacter).getPosition().x < 2f)
 								gameContentState.init();

@@ -1,6 +1,7 @@
 package uy.globalgamejam.medusa.templates;
 
 import uy.globalgamejam.medusa.Collisions;
+import uy.globalgamejam.medusa.components.Components;
 import uy.globalgamejam.medusa.components.Controller;
 import uy.globalgamejam.medusa.components.ControllerComponent;
 import uy.globalgamejam.medusa.components.EngineComponent;
@@ -13,7 +14,9 @@ import uy.globalgamejam.medusa.scripts.MoveTailScript;
 import uy.globalgamejam.medusa.scripts.ReplayRecorderScript;
 import uy.globalgamejam.medusa.tags.Tags;
 
+import com.artemis.Component;
 import com.artemis.Entity;
+import com.artemis.World;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -24,6 +27,7 @@ import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.components.TagComponent;
+import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.games.Spatial;
@@ -37,6 +41,11 @@ public class SnakeCharacterTemplate extends EntityTemplateImpl {
 	Injector injector;
 	ResourceManager<String> resourceManager;
 	
+	public static class SnakeStatus extends Component{
+		boolean vulnerable = false;
+		
+	}
+
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
@@ -53,7 +62,7 @@ public class SnakeCharacterTemplate extends EntityTemplateImpl {
 	public void apply(Entity entity) {
 		Spatial spatial = parameters.get("spatial");
 
-		spatial.setSize(2.5f,2.5f);
+		spatial.setSize(2.5f, 2.5f);
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.circleShape(0.5f) //
@@ -74,14 +83,14 @@ public class SnakeCharacterTemplate extends EntityTemplateImpl {
 
 		entity.addComponent(new EngineComponent(10f));
 		entity.addComponent(new TailComponent());
-		
+
 		Sprite sprite = resourceManager.getResourceValue(Sprites.Cabeza);
 
 		SpriteComponent spriteComponent = new SpriteComponent(sprite, 0.5f, 0.5f, Color.WHITE);
 		spriteComponent.setUpdateRotation(false);
 		entity.addComponent(spriteComponent);
 		entity.addComponent(new RenderableComponent(5, true));
-		
+
 		ReplayRecorderScript replayRecorderScript = new ReplayRecorderScript();
 		injector.injectMembers(replayRecorderScript);
 
@@ -90,9 +99,32 @@ public class SnakeCharacterTemplate extends EntityTemplateImpl {
 				injector.getInstance(EngineScript.class), //
 				injector.getInstance(EatEnemiesScript.class), //
 				injector.getInstance(MoveTailScript.class), //
-				replayRecorderScript //
+				replayRecorderScript, //
+				injector.getInstance(DangerScript.class)
 		));
 
 	}
+	
+	public static class DangerScript extends ScriptJavaImpl{
+		public static final int DANGER_TAIL_NUMBER = 15;
 
+		@Override
+		public void update(World world, Entity e) {
+			
+			TailComponent tailComponent = Components.getTailComponent(e);
+			if(tailComponent.parts.size()>DANGER_TAIL_NUMBER)
+				return;
+			
+			SpriteComponent spriteComponent = Components.getSpriteComponent(e);
+			SpatialComponent spatialComponent = Components.getSpatialComponent(e);
+			
+			
+			
+			
+			Color color = spriteComponent.getColor();
+			color.b = (((spatialComponent.getSpatial().getX()*60) % 255) + 50)/255;
+			color.clamp();
+			
+		}
+	}
 }
