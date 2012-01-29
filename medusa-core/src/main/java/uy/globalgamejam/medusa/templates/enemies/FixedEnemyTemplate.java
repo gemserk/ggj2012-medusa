@@ -47,8 +47,13 @@ public class FixedEnemyTemplate extends EntityTemplateImpl {
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.categoryBits(Collisions.Enemy) //
+						.maskBits((short) (Collisions.Obstacle)) //
+						.circleShape(0.25f) //
+				) //
+				.fixture(bodyBuilder.fixtureDefBuilder() //
+						.categoryBits(Collisions.Enemy) //
+						.sensor()
 						.maskBits((short) (Collisions.MainCharacter | Collisions.Tail)) //
-						.restitution(1f) //
 						.circleShape(0.25f) //
 				) //
 				.position(0f, 0f) //
