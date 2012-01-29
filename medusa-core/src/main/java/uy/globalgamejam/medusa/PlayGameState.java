@@ -3,6 +3,8 @@ package uy.globalgamejam.medusa;
 import uy.globalgamejam.medusa.LevelGeneratorTemplate.Element;
 import uy.globalgamejam.medusa.components.Components;
 import uy.globalgamejam.medusa.components.Controller;
+import uy.globalgamejam.medusa.components.Replay;
+import uy.globalgamejam.medusa.components.Replay.ReplayEntry;
 import uy.globalgamejam.medusa.components.TailComponent;
 import uy.globalgamejam.medusa.replay.ReplayManager;
 import uy.globalgamejam.medusa.templates.AttachedCameraTemplate;
@@ -10,6 +12,7 @@ import uy.globalgamejam.medusa.templates.KeyboardControllerTemplate;
 import uy.globalgamejam.medusa.templates.LevelInstantiator;
 import uy.globalgamejam.medusa.templates.ObstacleSpawnerTemplate2;
 import uy.globalgamejam.medusa.templates.SnakeCharacterTemplate;
+import uy.globalgamejam.medusa.templates.SnakeGhostTemplate;
 import uy.globalgamejam.medusa.templates.TailPartTemplate;
 
 import com.artemis.Entity;
@@ -144,11 +147,24 @@ public class PlayGameState extends GameStateImpl {
 					);
 			tailComponent.parts.add(tailPart);
 		}
+		
+		Replay replay = new Replay();
+		
+		replay.duration = 15000;
+		replay.add(new ReplayEntry(0, 0f, 2f));
+		replay.add(new ReplayEntry(2500, 15f, 2f));
+		replay.add(new ReplayEntry(5000, 30f, -7f));
+		replay.add(new ReplayEntry(7500, 60f, -7f));
 
-//		entityFactory.instantiate(injector.getInstance(TouchControllerTemplate.class), new ParametersWrapper() //
-//				.put("controller", controller) //
-//				.put("camera", worldCamera) //
-//				);
+		entityFactory.instantiate(injector.getInstance(SnakeGhostTemplate.class), new ParametersWrapper() //
+				.put("spatial", new SpatialImpl(0f, 0f, 1f, 1f, 0f)) //
+				.put("replay", replay) //
+				);
+
+		// entityFactory.instantiate(injector.getInstance(TouchControllerTemplate.class), new ParametersWrapper() //
+		// .put("controller", controller) //
+		// .put("camera", worldCamera) //
+		// );
 
 		entityFactory.instantiate(injector.getInstance(KeyboardControllerTemplate.class), new ParametersWrapper() //
 				.put("controller", controller) //
@@ -225,32 +241,32 @@ public class PlayGameState extends GameStateImpl {
 		customDecimalFormat = new CustomDecimalFormat(10);
 		score = 0L;
 
-//		entityFactory.instantiate(new EntityTemplateImpl() {
-//			@Override
-//			public void apply(Entity entity) {
-//				entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
-//					final Vector2 position = new Vector2();
-//
-//					@Override
-//					public void update(World world, Entity e) {
-//						if (!Gdx.input.justTouched())
-//							return;
-//
-//						int x = Gdx.input.getX();
-//						int y = Gdx.graphics.getHeight() - Gdx.input.getY();
-//
-//						position.set(x, y);
-//						worldCamera.unproject(position);
-//
-//						entityFactory.instantiate(injector.getInstance(TopDownEnemyTemplate.class), //
-//								new ParametersWrapper()
-//									.put("spatial", new SpatialImpl(position.x, position.y)) //
-//									.put("movingDown", MathUtils.randomBoolean()) //
-//								);
-//					}
-//				}));
-//			}
-//		});
+		// entityFactory.instantiate(new EntityTemplateImpl() {
+		// @Override
+		// public void apply(Entity entity) {
+		// entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
+		// final Vector2 position = new Vector2();
+		//
+		// @Override
+		// public void update(World world, Entity e) {
+		// if (!Gdx.input.justTouched())
+		// return;
+		//
+		// int x = Gdx.input.getX();
+		// int y = Gdx.graphics.getHeight() - Gdx.input.getY();
+		//
+		// position.set(x, y);
+		// worldCamera.unproject(position);
+		//
+		// entityFactory.instantiate(injector.getInstance(TopDownEnemyTemplate.class), //
+		// new ParametersWrapper()
+		// .put("spatial", new SpatialImpl(position.x, position.y)) //
+		// .put("movingDown", MathUtils.randomBoolean()) //
+		// );
+		// }
+		// }));
+		// }
+		// });
 
 	}
 
