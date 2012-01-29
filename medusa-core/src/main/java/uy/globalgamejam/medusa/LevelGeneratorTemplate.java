@@ -3,15 +3,18 @@ package uy.globalgamejam.medusa;
 import java.util.Comparator;
 
 import uy.globalgamejam.medusa.resources.GameResources;
+import uy.globalgamejam.medusa.resources.GameResources.Sprites;
 import uy.globalgamejam.medusa.templates.ItemTemplate;
 import uy.globalgamejam.medusa.templates.ObstacleTemplate;
-import uy.globalgamejam.medusa.templates.enemies.FixedEnemyTemplate;
+import uy.globalgamejam.medusa.templates.enemies.SimpleEnemyTemplate;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.games.SpatialImpl;
+import com.gemserk.commons.gdx.math.MathUtils2;
 import com.gemserk.commons.reflection.Injector;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
@@ -88,14 +91,39 @@ public class LevelGeneratorTemplate {
 			lastX += MathUtils.random(10, 20);
 			Element element = new Element();
 			element.xCoord = lastX - GENERATION_BETWEEN_ELEMENTS;
-			element.entityTemplate = FixedEnemyTemplate.class;
+			
+			element.entityTemplate = SimpleEnemyTemplate.class;
 
+			Sprite sprite = resourceManager.getResourceValue(Sprites.Enemy1);
+			float enemyScale = 1f;
+			float width = sprite.getWidth() / (worldScale*enemyScale);
+			float height = sprite.getHeight() / (worldScale*enemyScale);
+			
 			element.parameters = new ParametersWrapper() //
-					.put("spatial", new SpatialImpl(lastX, 5, 1, 1, 0)); //
+					.put("spatial", new SpatialImpl(lastX, MathUtils.random(-maxYCoord, maxYCoord), width, height, 0))//
+					.put("initialVelocity", new Vector2(1, 0).rotate(MathUtils.random(360)).mul(MathUtils.random(1f)))//
+					.put("sprite", sprite)//
+					.put("fixtureId", "enemigo1a.png") //
+
+			; //
 
 			elements.add(element);
 			System.out.println("Element(fixed enemy) Created at " + element.xCoord);
 		}
+
+//		lastX = 0;
+//		while (lastX < distance) {
+//			lastX += MathUtils.random(10, 20);
+//			Element element = new Element();
+//			element.xCoord = lastX - GENERATION_BETWEEN_ELEMENTS;
+//			element.entityTemplate = SimpleEnemyTemplate.class;
+//
+//			element.parameters = new ParametersWrapper() //
+//					.put("spatial", new SpatialImpl(lastX, 5, 1, 1, 0)); //
+//
+//			elements.add(element);
+//			System.out.println("Element(fixed enemy) Created at " + element.xCoord);
+//		}
 
 		elements.sort(new Comparator<LevelGeneratorTemplate.Element>() {
 
