@@ -80,17 +80,18 @@ public class PlayGameState extends GameStateImpl {
 
 		synchronizer = new Synchronizer();
 
-		float gameScale = Gdx.graphics.getHeight() / 1024f;
+		float gameScale = Gdx.graphics.getHeight() / 480;
 
 		normalCamera = new Libgdx2dCameraTransformImpl(0f, 0f);
 		normalCamera.zoom(1f);
 
-		float scale = 64f;
+		float scale = 24f;
 
 		worldCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() * 0.15f, Gdx.graphics.getHeight() * 0.5f);
-		worldCamera.zoom(scale * gameScale);
+		float worldScale = scale * gameScale;
+		worldCamera.zoom(worldScale);
 
-		worldRealCamera = new CameraImpl(0, 0, scale * gameScale, 0f);
+		worldRealCamera = new CameraImpl(0, 0, worldScale, 0f);
 
 		RenderLayers renderLayers = new RenderLayers();
 
@@ -113,6 +114,8 @@ public class PlayGameState extends GameStateImpl {
 		injector.bind("bodyBuilder", new BodyBuilder(physicsWorld));
 		injector.bind("synchronizer", synchronizer);
 		injector.bind("mesh2dBuilder", new Mesh2dBuilder());
+		injector.bind("maxYCoord", (Float)(Gdx.graphics.getHeight()/(worldScale*2)));
+		injector.bind("worldScale", (Float)worldScale);
 
 		scene.addUpdateSystem(new ScriptSystem());
 		scene.addUpdateSystem(new TagSystem());

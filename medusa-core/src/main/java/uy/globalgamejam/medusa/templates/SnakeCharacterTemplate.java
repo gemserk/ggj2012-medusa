@@ -63,7 +63,6 @@ public class SnakeCharacterTemplate extends EntityTemplateImpl {
 				Body tailBodyPart = physics.getBody();
 
 				float amplitud = 0.02f * i;
-
 				if (amplitud > 0.15f)
 					amplitud = 0.15f;
 
