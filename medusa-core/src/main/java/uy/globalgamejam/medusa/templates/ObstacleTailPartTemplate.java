@@ -58,7 +58,7 @@ public class ObstacleTailPartTemplate extends EntityTemplateImpl {
 		entity.addComponent(new PhysicsComponent(body));
 		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, spatial)));
 		
-		Sprite sprite = resourceManager.getResourceValue(Sprites.Cabeza);
+		Sprite sprite = resourceManager.getResourceValue(Sprites.Cuerpo);
 		
 
 		entity.addComponent(new SpriteComponent(sprite, 0.5f, 0.5f, Color.WHITE));

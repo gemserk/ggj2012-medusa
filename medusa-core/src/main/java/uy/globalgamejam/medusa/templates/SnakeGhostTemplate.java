@@ -199,7 +199,7 @@ public class SnakeGhostTemplate extends EntityTemplateImpl {
 		Sprite sprite = resourceManager.getResourceValue(Sprites.Cabeza);
 		
 
-		entity.addComponent(new SpriteComponent(sprite, 0.5f, 0.5f, Color.WHITE));
+		entity.addComponent(new SpriteComponent(sprite, 0.5f, 0.5f, new Color(1, 1, 1, 0.3f)));
 		entity.addComponent(new RenderableComponent(5, true));
 	}
 

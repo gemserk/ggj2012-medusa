@@ -108,16 +108,9 @@ extra3a
   orig: 71, 57
   offset: 0, 0
   index: -1
-cabeza
-  rotate: false
-  xy: 404, 893
-  size: 70, 52
-  orig: 70, 52
-  offset: 0, 0
-  index: -1
 extra1a
   rotate: false
-  xy: 404, 947
+  xy: 404, 893
   size: 71, 50
   orig: 71, 50
   offset: 0, 0
@@ -143,6 +136,13 @@ enemigo2a
   orig: 45, 48
   offset: 0, 0
   index: 2
+cabeza
+  rotate: false
+  xy: 826, 284
+  size: 34, 28
+  orig: 34, 28
+  offset: 0, 0
+  index: -1
 enemigo3a
   rotate: false
   xy: 349, 310
@@ -159,8 +159,8 @@ enemigo3a
   index: 1
 cuerpo
   rotate: false
-  xy: 826, 284
-  size: 20, 28
-  orig: 20, 28
+  xy: 429, 310
+  size: 12, 17
+  orig: 12, 17
   offset: 0, 0
   index: -1

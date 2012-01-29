@@ -99,7 +99,7 @@ public class TailPartTemplate extends EntityTemplateImpl {
 	@Override
 	public void apply(Entity entity) {
 		Spatial spatial = parameters.get("spatial");
-		spatial.setSize(0.7f, 0.7f);
+		spatial.setSize(1f, 1f);
 		Entity owner = parameters.get("owner");
 
 		Body body = bodyBuilder //
@@ -123,8 +123,14 @@ public class TailPartTemplate extends EntityTemplateImpl {
 		
 		Sprite sprite = resourceManager.getResourceValue(Sprites.Cuerpo);
 		
+		
+		Boolean deadSnake = parameters.get("deadSnake",false);
 
-		entity.addComponent(new SpriteComponent(sprite, 0.5f, 0.5f, Color.WHITE));
+		Color color = new Color(Color.WHITE);
+		if(deadSnake)
+			color.a = 0.3f;
+		
+		entity.addComponent(new SpriteComponent(sprite, 0.5f, 0.5f, color));
 		entity.addComponent(new RenderableComponent(4, true));
 	}
 

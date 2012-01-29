@@ -53,7 +53,7 @@ public class SnakeCharacterTemplate extends EntityTemplateImpl {
 	public void apply(Entity entity) {
 		Spatial spatial = parameters.get("spatial");
 
-		spatial.setSize(1.5f, 1.5f);
+		spatial.setSize(2f,2f);
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.circleShape(0.5f) //

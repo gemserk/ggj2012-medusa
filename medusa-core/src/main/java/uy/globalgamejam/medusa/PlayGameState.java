@@ -106,7 +106,7 @@ public class PlayGameState extends GameStateImpl {
 		normalCamera = new Libgdx2dCameraTransformImpl(0f, 0f);
 		normalCamera.zoom(1f);
 
-		worldCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() * 0.15f, Gdx.graphics.getHeight() * 0.5f);
+		worldCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() * 0.25f, Gdx.graphics.getHeight() * 0.5f);
 		float worldScale = gameContentState.worldScale;
 		worldCamera.zoom(worldScale);
 
@@ -161,9 +161,11 @@ public class PlayGameState extends GameStateImpl {
 
 		TailComponent tailComponent = Components.getTailComponent(mainCharacter);
 
-		for (int i = 0; i < 25; i++) {
+		int tailLength = 50;
+		
+		for (int i = 0; i < tailLength; i++) {
 			Entity tailPart = entityFactory.instantiate(injector.getInstance(TailPartTemplate.class), new ParametersWrapper() //
-					.put("spatial", new SpatialImpl(-i, 0f, 1f, 1f, 0f)) //
+					.put("spatial", new SpatialImpl(-i-100, y, 1f, 1f, 0f)) //
 					.put("owner", mainCharacter) //
 					);
 			tailComponent.parts.add(tailPart);
@@ -172,19 +174,21 @@ public class PlayGameState extends GameStateImpl {
 		ArrayList<Replay> replays = gameContentState.replayManager.getReplays();
 
 		for (Replay replay : replays) {
-
+			y = replay.getEntry(0).y;
+			y = -100;
 			Entity ghostSnake = entityFactory.instantiate(injector.getInstance(SnakeGhostTemplate.class), new ParametersWrapper() //
-					.put("spatial", new SpatialImpl(0f, 0f, 1f, 1f, 0f)) //
+					.put("spatial", new SpatialImpl(-100f, y, 1f, 1f, 0f)) //
 					.put("replay", replay) //
-					.put("offset", 1f) //
+					.put("offset", 1.5f) //
 					);
 
 			tailComponent = Components.getTailComponent(ghostSnake);
 
-			for (int i = 0; i < 25; i++) {
+			for (int i = 0; i < tailLength; i++) {
 				Entity tailPart = entityFactory.instantiate(injector.getInstance(TailPartTemplate.class), new ParametersWrapper() //
-						.put("spatial", new SpatialImpl(-i, 0f, 1f, 1f, 0f)) //
+						.put("spatial", new SpatialImpl(-i-10, y, 1f, 1f, 0f)) //
 						.put("owner", ghostSnake) //
+						.put("deadSnake", true)
 						);
 				tailComponent.parts.add(tailPart);
 			}
@@ -333,7 +337,8 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void render() {
-		Gdx.gl.glClearColor(0f, 0f, 0.5f, 0f);
+//		Gdx.gl.glClearColor(1f, 0.5f, 0.0f, 0f);
+		Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 0f);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		scene.render();
