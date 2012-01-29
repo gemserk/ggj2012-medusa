@@ -5,7 +5,6 @@ import uy.globalgamejam.medusa.components.Controller;
 import uy.globalgamejam.medusa.components.Replay;
 import uy.globalgamejam.medusa.components.Replay.ReplayEntry;
 import uy.globalgamejam.medusa.components.TailComponent;
-import uy.globalgamejam.medusa.replay.ReplayManager;
 import uy.globalgamejam.medusa.templates.AttachedCameraTemplate;
 import uy.globalgamejam.medusa.templates.KeyboardControllerTemplate;
 import uy.globalgamejam.medusa.templates.LevelInstantiator;
@@ -17,6 +16,7 @@ import uy.globalgamejam.medusa.templates.TailPartTemplate;
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -38,6 +38,7 @@ import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
+import com.gemserk.commons.gdx.GameState;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
@@ -50,6 +51,8 @@ import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
 import com.gemserk.commons.reflection.Injector;
 import com.gemserk.commons.text.CustomDecimalFormat;
+import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
+import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 
 public class PlayGameState extends GameStateImpl {
@@ -73,6 +76,8 @@ public class PlayGameState extends GameStateImpl {
 
 	private com.badlogic.gdx.physics.box2d.World physicsWorld;
 	private Camera worldRealCamera;
+	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
+	private GameContentState gameContentState;
 
 	@Override
 	public void init() {
@@ -80,7 +85,7 @@ public class PlayGameState extends GameStateImpl {
 
 		synchronizer = new Synchronizer();
 
-		GameContentState gameContentState = getParameters().get("gameContentState");
+		gameContentState = getParameters().get("gameContentState");
 
 		normalCamera = new Libgdx2dCameraTransformImpl(0f, 0f);
 		normalCamera.zoom(1f);
@@ -110,9 +115,7 @@ public class PlayGameState extends GameStateImpl {
 		injector.bind("bodyBuilder", new BodyBuilder(physicsWorld));
 		injector.bind("synchronizer", synchronizer);
 		injector.bind("mesh2dBuilder", new Mesh2dBuilder());
-		injector.bind("replayManager", new ReplayManager());
-		// injector.bind("maxYCoord", (Float) (Gdx.graphics.getHeight() / (worldScale * 2)));
-		// injector.bind("worldScale", (Float) worldScale);
+		injector.bind("replayManager", gameContentState.replayManager);
 
 		scene.addUpdateSystem(new ScriptSystem());
 		scene.addUpdateSystem(new TagSystem());
@@ -179,12 +182,6 @@ public class PlayGameState extends GameStateImpl {
 				.put("controller", controller) //
 				);
 
-		// entityFactory.instantiate(injector.getInstance(ItemSpawnerTemplate.class));
-
-		// LevelGeneratorTemplate levelGenerator = injector.getInstance(LevelGeneratorTemplate.class);
-		// Array<Element> elements = levelGenerator.generate();
-		// System.out.println("Elements: " + elements.size);
-
 		entityFactory.instantiate(injector.getInstance(LevelInstantiator.class), //
 				new ParametersWrapper().put("elements", gameContentState.elements));
 
@@ -193,90 +190,19 @@ public class PlayGameState extends GameStateImpl {
 				.put("camera", worldRealCamera) //
 				);
 
-		// entityFactory.instantiate(injector.getInstance(ObstacleSpawnerTemplate.class));
 		entityFactory.instantiate(injector.getInstance(ObstacleSpawnerTemplate2.class));
-
-		// entityFactory.instantiate(new EntityTemplateImpl() {
-		// @Override
-		// public void apply(Entity entity) {
-		// entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
-		//
-		// public void update(World world, Entity e) {
-		// Entity mainCharacter = world.getTagManager().getEntity(Tags.MainCharacter);
-		// if (mainCharacter == null)
-		// return;
-		// PhysicsComponent physicsComponent = Components.getPhysicsComponent(mainCharacter);
-		// Contacts contacts = physicsComponent.getContact();
-		//
-		// score += 10;
-		//
-		// if (!contacts.isInContact())
-		// return;
-		//
-		// for (int i = 0; i < contacts.getContactCount(); i++) {
-		// Contact contact = contacts.getContact(i);
-		//
-		// if (contact.getOtherFixture().isSensor())
-		// continue;
-		//
-		// game.gameOverGameState.getParameters().put("score", score);
-		//
-		// Gdx.app.postRunnable(new Runnable() {
-		// @Override
-		// public void run() {
-		// game.setGameState(game.gameOverGameState, true);
-		// }
-		// });
-		//
-		// // new TransitionBuilder(game, game.gameOverScreen) //
-		// // .parameter("score", score) //
-		// // .start();
-		//
-		// return;
-		// }
-		//
-		// }
-		//
-		// @Handles(ids = Events.ItemGrabbed)
-		// public void scoreOnItemGrabbed(Event e) {
-		// score += 10000;
-		// }
-		//
-		// }));
-		// }
-		// });
 
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont();
 		customDecimalFormat = new CustomDecimalFormat(10);
 		score = 0L;
 
-		// entityFactory.instantiate(new EntityTemplateImpl() {
-		// @Override
-		// public void apply(Entity entity) {
-		// entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
-		// final Vector2 position = new Vector2();
-		//
-		// @Override
-		// public void update(World world, Entity e) {
-		// if (!Gdx.input.justTouched())
-		// return;
-		//
-		// int x = Gdx.input.getX();
-		// int y = Gdx.graphics.getHeight() - Gdx.input.getY();
-		//
-		// position.set(x, y);
-		// worldCamera.unproject(position);
-		//
-		// entityFactory.instantiate(injector.getInstance(TopDownEnemyTemplate.class), //
-		// new ParametersWrapper()
-		// .put("spatial", new SpatialImpl(position.x, position.y)) //
-		// .put("movingDown", MathUtils.randomBoolean()) //
-		// );
-		// }
-		// }));
-		// }
-		// });
+		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
+		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
+			{
+				monitorKey("restartLevel", Keys.R);
+			}
+		};
 
 	}
 
@@ -284,7 +210,25 @@ public class PlayGameState extends GameStateImpl {
 	public void update() {
 		synchronizer.synchronize(getDelta());
 		scene.update(getDeltaInMs());
-		// rayHandler.updateRays();
+
+		inputDevicesMonitor.update();
+		if (inputDevicesMonitor.getButton("restartLevel").isReleased()) {
+			Gdx.app.postRunnable(new Runnable() {
+				@Override
+				public void run() {
+					
+					GameState gameState = game.getGameState();
+					
+					gameState.dispose();
+					
+					gameState.getParameters().put("gameContentState", gameContentState);
+					
+					gameState.init();
+					
+				}
+			});
+		}
+		
 	}
 
 	@Override
