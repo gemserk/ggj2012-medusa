@@ -9,8 +9,9 @@ public class Collisions {
 	public static final short Obstacle = 2;
 	public static final short Item = 4;
 
+
 	public static final short Tail = 8;
 	public static final short Enemy = 16;
 	
-
+	public static final short Debug = 32;
 }
