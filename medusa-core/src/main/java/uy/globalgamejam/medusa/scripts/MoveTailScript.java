@@ -23,6 +23,7 @@ public class MoveTailScript extends ScriptJavaImpl {
 		TailComponent tailComponent = Components.getTailComponent(e);
 
 		float x = spatial.getX();
+		float y = spatial.getY();
 
 		Body characterBody = physicsComponent.getBody();
 
@@ -45,6 +46,7 @@ public class MoveTailScript extends ScriptJavaImpl {
 				amplitud *= 1f / (Math.abs(characterBody.getLinearVelocity().y) * 10f);
 
 			float displacementY = (float) Math.sin(x * 2f + i) * amplitud;
+			// float displacementY = (float) Math.sin(x * (2f * Math.ceil(y)) + i) * amplitud;
 
 			Vector2 currentPartPosition = tailBodyPart.getPosition();
 			float currentPartAngle = tailBodyPart.getAngle();

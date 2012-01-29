@@ -3,7 +3,6 @@ package uy.globalgamejam.medusa;
 import uy.globalgamejam.medusa.resources.GameResources;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -24,9 +23,7 @@ import com.gemserk.commons.performance.DeltaTimeLogger;
 import com.gemserk.commons.performance.TimeLogger;
 import com.gemserk.commons.reflection.Injector;
 import com.gemserk.commons.reflection.InjectorImpl;
-import com.gemserk.resources.Resource;
-import com.gemserk.resources.ResourceManager;
-import com.gemserk.resources.ResourceManagerImpl;
+import com.gemserk.resources.CustomResourceManager;
 
 public class Game extends ApplicationListenerGameStateBasedImpl {
 
@@ -38,6 +35,7 @@ public class Game extends ApplicationListenerGameStateBasedImpl {
 
 	public GameState playGameState;
 	public GameState gameOverGameState;
+	public GameState splashGameState;
 
 	TimeLogger deltaTimeLogger;
 	TimeLogger averageDeltaTimeLogger;
@@ -88,7 +86,7 @@ public class Game extends ApplicationListenerGameStateBasedImpl {
 		Converters.register(Color.class, LibgdxConverters.color());
 		Converters.register(Vector2.class, LibgdxConverters.vector2());
 
-		ResourceManager<String> resourceManager = new ResourceManagerImpl<String>();
+		CustomResourceManager<String> resourceManager = new CustomResourceManager<String>();
 
 		GameResources.load(resourceManager);
 
@@ -102,9 +100,11 @@ public class Game extends ApplicationListenerGameStateBasedImpl {
 
 		playGameState = injector.getInstance(PlayGameState.class);
 		gameOverGameState = injector.getInstance(GameOverGameState.class);
+		splashGameState = injector.getInstance(SplashGameState.class);
 
 		playGameState = fixedTimestep(internalState(playGameState));
 		gameOverGameState = fixedTimestep(internalState(gameOverGameState));
+		splashGameState = fixedTimestep(internalState(splashGameState));
 
 		GameContentState gameContentState = new GameContentState();
 
@@ -122,7 +122,8 @@ public class Game extends ApplicationListenerGameStateBasedImpl {
 
 		playGameState.getParameters().put("gameContentState", gameContentState);
 
-		setGameState(playGameState);
+//		setGameState(playGameState);
+		setGameState(splashGameState);
 
 		// playScreen = new ScreenImpl(playGameState);
 		// gameOverScreen = new ScreenImpl(gameOverGameState);
@@ -148,12 +149,7 @@ public class Game extends ApplicationListenerGameStateBasedImpl {
 		};
 		accumulatorLogger.enable();
 		
-		Resource<Music> musicResource = resourceManager.get(GameResources.MusicTracks.Game);
-		
-		Music music = musicResource.get();
-		
-		music.setLooping(true);		
-		music.play();
+
 	}
 
 	@Override

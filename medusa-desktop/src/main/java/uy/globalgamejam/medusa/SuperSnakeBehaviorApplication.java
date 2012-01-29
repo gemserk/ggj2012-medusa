@@ -123,7 +123,8 @@ public class SuperSnakeBehaviorApplication {
 				if (Math.abs(bodyA.getLinearVelocity().y) > 1f)
 					amplitud *= 1f / (Math.abs(bodyA.getLinearVelocity().y) * 10f);
 
-				float displacementY = (float) Math.sin(x * 0.5f + i) * amplitud;
+//				float displacementY = (float) Math.sin(x * 0.5f + i) * amplitud;
+				float displacementY = (float) Math.sin(x * 0.5f + y * 0.5f + i) * amplitud;
 
 				// if (Math.abs(bodyA.getLinearVelocity().y) > 0.1f)
 				// displacementY = 0f;
