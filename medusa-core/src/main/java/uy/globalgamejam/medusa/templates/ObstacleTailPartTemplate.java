@@ -38,7 +38,7 @@ public class ObstacleTailPartTemplate extends EntityTemplateImpl {
 	@Override
 	public void apply(Entity entity) {
 		Spatial spatial = parameters.get("spatial");
-		spatial.setSize(0.7f, 0.7f);
+		spatial.setSize(1f, 1f);
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.circleShape(0.1f) //
