@@ -6,6 +6,8 @@ import uy.globalgamejam.medusa.components.Components;
 import uy.globalgamejam.medusa.components.Controller;
 import uy.globalgamejam.medusa.components.Replay;
 import uy.globalgamejam.medusa.components.TailComponent;
+import uy.globalgamejam.medusa.tags.Groups;
+import uy.globalgamejam.medusa.tags.Tags;
 import uy.globalgamejam.medusa.templates.AttachedCameraTemplate;
 import uy.globalgamejam.medusa.templates.KeyboardControllerTemplate;
 import uy.globalgamejam.medusa.templates.LevelInstantiator;
@@ -24,9 +26,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.animation4j.transitions.sync.Synchronizer;
 import com.gemserk.commons.artemis.WorldWrapper;
+import com.gemserk.commons.artemis.components.GroupComponent;
+import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.render.RenderLayers;
+import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.CameraUpdateSystem;
 import com.gemserk.commons.artemis.systems.EventManagerWorldSystem;
 import com.gemserk.commons.artemis.systems.LimitLinearVelocitySystem;
@@ -39,9 +44,12 @@ import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
+import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.GameState;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
+import com.gemserk.commons.gdx.box2d.Contacts;
+import com.gemserk.commons.gdx.box2d.Contacts.Contact;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
@@ -150,7 +158,7 @@ public class PlayGameState extends GameStateImpl {
 					);
 			tailComponent.parts.add(tailPart);
 		}
-		
+
 		ArrayList<Replay> replays = gameContentState.replayManager.getReplays();
 
 		for (Replay replay : replays) {
@@ -171,7 +179,6 @@ public class PlayGameState extends GameStateImpl {
 			}
 
 		}
-
 
 		// entityFactory.instantiate(injector.getInstance(TouchControllerTemplate.class), new ParametersWrapper() //
 		// .put("controller", controller) //
@@ -204,6 +211,49 @@ public class PlayGameState extends GameStateImpl {
 			}
 		};
 
+		entityFactory.instantiate(new EntityTemplateImpl() {
+			@Override
+			public void apply(Entity entity) {
+				entity.addComponent(new ScriptComponent(new ScriptJavaImpl() { 
+					@Override
+					public void update(World world, Entity e) {
+						Entity mainCharacter = world.getTagManager().getEntity(Tags.MainCharacter);
+						Contacts contacts = Components.getPhysicsComponent(mainCharacter).getContact();
+						if (!contacts.isInContact())
+							return;
+						
+						for (int j = 0; j < contacts.getContactCount(); j++) {
+							Contact contact = contacts.getContact(j);
+							
+							Entity entity = (Entity) contact.getOtherFixture().getBody().getUserData();
+							if (entity == null)
+								continue;
+							
+							GroupComponent groupComponent = Components.getGroupComponent(entity);
+							
+							if (groupComponent == null)
+								continue;
+							
+							if (!Groups.Obstacles.equals(groupComponent.group)) 
+								continue;
+							
+							Gdx.app.postRunnable(new Runnable() {
+								@Override
+								public void run() {
+									GameState gameState = game.getGameState();
+									gameState.dispose();
+									gameState.getParameters().put("gameContentState", gameContentState);
+									gameState.init();
+								}
+							});
+							
+							return;
+						}
+					}
+				}));
+			}
+		});
+
 	}
 
 	@Override
@@ -223,7 +273,7 @@ public class PlayGameState extends GameStateImpl {
 				}
 			});
 		}
-		
+
 	}
 
 	@Override

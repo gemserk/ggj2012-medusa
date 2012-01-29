@@ -31,7 +31,7 @@ public class SnakeCharacterTemplate extends EntityTemplateImpl {
 	BodyBuilder bodyBuilder;
 	Injector injector;
 	ResourceManager<String> resourceManager;
-
+	
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
