@@ -65,7 +65,7 @@ public class SnakeCharacterTemplate extends EntityTemplateImpl {
 		Controller controller = parameters.get("controller");
 		entity.addComponent(new ControllerComponent(controller));
 
-		entity.addComponent(new EngineComponent(8f));
+		entity.addComponent(new EngineComponent(10f));
 		entity.addComponent(new TailComponent());
 		
 		ReplayRecorderScript replayRecorderScript = new ReplayRecorderScript();
