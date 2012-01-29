@@ -50,7 +50,7 @@ public class ObstacleTemplate extends EntityTemplateImpl {
 		Body body = bodyBuilder //
 				.position(0f, 0f) //
 				.type(BodyType.StaticBody) //
-				.angle(0f) //
+				.angle(0) //
 				.userData(entity) //
 				.build();
 
@@ -71,7 +71,10 @@ public class ObstacleTemplate extends EntityTemplateImpl {
 
 		ArrayList<Fixture> fixtureList = body.getFixtureList();
 
-		ShapeUtils.translateFixtures(fixtureList, -width * 0.5f, -height * 0.5f);
+		Float alignX = parameters.get("alignX",0.5f);
+		Float alignY = parameters.get("alignY",0.5f);
+		
+		ShapeUtils.translateFixtures(fixtureList, -width * alignX, -height * alignY);
 
 		body.setTransform(spatial.getX(), spatial.getY(), spatial.getAngle());
 
@@ -80,7 +83,7 @@ public class ObstacleTemplate extends EntityTemplateImpl {
 
 		Sprite sprite = parameters.get("sprite");
 
-		entity.addComponent(new SpriteComponent(sprite, 0.5f, 0.5f, Color.WHITE));
+		entity.addComponent(new SpriteComponent(sprite, alignX, alignY, Color.WHITE));
 		entity.addComponent(new RenderableComponent(-10, true));
 	}
 

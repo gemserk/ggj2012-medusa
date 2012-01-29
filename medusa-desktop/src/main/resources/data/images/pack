@@ -3,31 +3,73 @@ world1.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-obstacle-01
+muro7a
   rotate: false
   xy: 2, 2
-  size: 233, 487
-  orig: 233, 487
+  size: 345, 330
+  orig: 345, 330
   offset: 0, 0
   index: -1
-obstacle-02
+muro3a
   rotate: false
-  xy: 2, 491
-  size: 301, 335
-  orig: 301, 335
+  xy: 349, 2
+  size: 332, 306
+  orig: 332, 306
   offset: 0, 0
   index: -1
-item
+muro4a
   rotate: false
-  xy: 237, 2
-  size: 128, 128
-  orig: 128, 128
+  xy: 683, 2
+  size: 333, 280
+  orig: 333, 280
+  offset: 0, 0
+  index: -1
+muro6a
+  rotate: false
+  xy: 2, 334
+  size: 400, 250
+  orig: 400, 250
+  offset: 0, 0
+  index: -1
+muro2a
+  rotate: false
+  xy: 2, 586
+  size: 368, 250
+  orig: 368, 250
+  offset: 0, 0
+  index: -1
+muro5a
+  rotate: false
+  xy: 404, 334
+  size: 340, 245
+  orig: 340, 245
+  offset: 0, 0
+  index: -1
+muro1a
+  rotate: false
+  xy: 2, 838
+  size: 376, 183
+  orig: 376, 183
   offset: 0, 0
   index: -1
 character
   rotate: false
-  xy: 367, 2
+  xy: 746, 334
   size: 128, 128
   orig: 128, 128
+  offset: 0, 0
+  index: -1
+item
+  rotate: false
+  xy: 876, 334
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+obstaculo1a
+  rotate: false
+  xy: 746, 464
+  size: 113, 113
+  orig: 113, 113
   offset: 0, 0
   index: -1
