@@ -182,7 +182,7 @@ public class SnakeGhostTemplate extends EntityTemplateImpl {
 	@Override
 	public void apply(Entity entity) {
 		Spatial spatial = parameters.get("spatial");
-		spatial.setSize(1.5f, 1.5f);
+		spatial.setSize(2.5f, 2.5f);
 		Replay replay = parameters.get("replay");
 		Float offset = parameters.get("offset", 1f);
 
