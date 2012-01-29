@@ -5,6 +5,7 @@ import java.util.Comparator;
 import uy.globalgamejam.medusa.resources.GameResources;
 import uy.globalgamejam.medusa.resources.GameResources.Animations;
 import uy.globalgamejam.medusa.resources.GameResources.Sprites;
+import uy.globalgamejam.medusa.templates.ExtraBackgroundTemplate;
 import uy.globalgamejam.medusa.templates.ItemTemplate;
 import uy.globalgamejam.medusa.templates.ObstacleTemplate;
 import uy.globalgamejam.medusa.templates.enemies.SimpleEnemyTemplate;
@@ -12,6 +13,7 @@ import uy.globalgamejam.medusa.templates.enemies.TopDownEnemyTemplate;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.gemserk.animation4j.gdx.Animation;
@@ -43,9 +45,13 @@ public class LevelGeneratorTemplate {
 		float distance = 1000;
 		final Array<Element> elements = new Array<Element>();
 
-		float lastX = 0;
+		float iniX = 10;
+		float lastX = iniX;
+		Rectangle oldRectangle = new Rectangle();
+		boolean oldTop = false;
 		while (lastX < distance) {
-			lastX += MathUtils.random(15, 30);
+			lastX += MathUtils.random(15, 20);
+//			lastX += MathUtils.random(3, 3);
 			Element element = new Element();
 			element.xCoord = lastX - GENERATION_BETWEEN_ELEMENTS;
 			element.entityTemplate = ObstacleTemplate.class;
@@ -60,13 +66,23 @@ public class LevelGeneratorTemplate {
 			float height = sprite.getHeight() / worldScale;
 			System.out.println(maxYCoord);
 			float y;
+			boolean top = false;
 			if (obstacle.alignY == 0f) {
 				y = -maxYCoord + 0.5f * height;
+				top = false;
 			} else if (obstacle.alignY == 1) {
 				y = maxYCoord - 0.5f * height;
+				top = true;
 			} else {
 				y = obstacle.yCoord;
 			}
+			
+			Rectangle rectangle = new Rectangle(lastX, y, width, height);
+			if(oldTop != top && rectangle.overlaps(oldRectangle))
+				continue;
+			
+			oldTop = top;
+			oldRectangle = rectangle;
 
 			element.parameters = new ParametersWrapper() //
 					.put("spatial", new SpatialImpl(lastX, y, width, height, obstacle.angle)) //
@@ -79,7 +95,7 @@ public class LevelGeneratorTemplate {
 			System.out.println("Element(obstacle) Created at " + element.xCoord);
 		}
 
-		lastX = 0;
+		lastX = iniX;
 		while (lastX < distance) {
 			lastX += MathUtils.random(10, 20);
 			Element element = new Element();
@@ -107,7 +123,7 @@ public class LevelGeneratorTemplate {
 			System.out.println("Element(fixed enemy) Created at " + element.xCoord);
 		}
 		
-		lastX = 0;
+		lastX = iniX;
 		while (lastX < distance) {
 			lastX += MathUtils.random(10, 20);
 			Element element = new Element();
@@ -126,6 +142,32 @@ public class LevelGeneratorTemplate {
 					.put("movingDown", MathUtils.randomBoolean())//
 					.put("animation", animation)//
 					.put("fixtureId", "enemigo2a_1.png") //
+
+			; //
+
+			elements.add(element);
+			System.out.println("Element(fixed enemy) Created at " + element.xCoord);
+		}
+		
+		lastX = iniX;
+		String[] extraElements = {Sprites.Astronauta, Sprites.Nave, Sprites.Satelite}; 
+		while (lastX < distance) {
+			lastX += MathUtils.random(80,120);
+			Element element = new Element();
+			element.xCoord = lastX - GENERATION_BETWEEN_ELEMENTS;
+			
+			element.entityTemplate = ExtraBackgroundTemplate.class;
+
+			String spriteKey = randomElement(extraElements);
+			Sprite sprite = resourceManager.getResourceValue(spriteKey);
+			float enemyScale = 1f;
+			float width = sprite.getWidth() / (worldScale*enemyScale);
+			float height = sprite.getHeight() / (worldScale*enemyScale);
+			
+			element.parameters = new ParametersWrapper() //
+					.put("spatial", new SpatialImpl(lastX, MathUtils.random(-maxYCoord, maxYCoord), width, height, 0))//
+					.put("angularVelocity", MathUtils.random(0.1f, 1.0f))//
+					.put("sprite", sprite)//
 
 			; //
 

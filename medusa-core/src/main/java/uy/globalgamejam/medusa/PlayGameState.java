@@ -211,6 +211,7 @@ public class PlayGameState extends GameStateImpl {
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
 			{
 				monitorKey("restartLevel", Keys.R);
+				monitorKey("newLevel", Keys.SPACE);
 			}
 		};
 
@@ -249,6 +250,9 @@ public class PlayGameState extends GameStateImpl {
 
 							if (!Groups.Obstacles.equals(groupComponent.group))
 								continue;
+							
+							if(Components.getSpatialComponent(mainCharacter).getPosition().x < 0.5f)
+								gameContentState.init();
 
 							Gdx.app.postRunnable(new Runnable() {
 								@Override
@@ -281,6 +285,19 @@ public class PlayGameState extends GameStateImpl {
 				public void run() {
 					GameState gameState = game.getGameState();
 					gameState.dispose();
+					gameState.getParameters().put("gameContentState", gameContentState);
+					gameState.init();
+				}
+			});
+		}
+		
+		if (inputDevicesMonitor.getButton("newLevel").isReleased()) {
+			Gdx.app.postRunnable(new Runnable() {
+				@Override
+				public void run() {
+					GameState gameState = game.getGameState();
+					gameState.dispose();
+					gameContentState.init();
 					gameState.getParameters().put("gameContentState", gameContentState);
 					gameState.init();
 				}

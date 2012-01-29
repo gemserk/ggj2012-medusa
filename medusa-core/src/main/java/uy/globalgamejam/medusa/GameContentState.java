@@ -11,6 +11,13 @@ public class GameContentState {
 	ReplayManager replayManager;
 	
 	public float worldScale;
+	public float maxYCoord;
 	
+	LevelGeneratorTemplate levelGenerator;
+
+	public void init() {
+		elements = levelGenerator.generate(maxYCoord, worldScale);
+		replayManager = new ReplayManager();
+	}
 
 }

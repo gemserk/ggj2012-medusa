@@ -108,9 +108,12 @@ public class Game extends ApplicationListenerGameStateBasedImpl {
 		float scale = 24f;
 		float worldScale = scale * 1f;
 		gameContentState.worldScale = worldScale;
+		gameContentState.maxYCoord = Gdx.graphics.getHeight() / (worldScale * 2);
 		
-		gameContentState.elements = levelGenerator.generate(Gdx.graphics.getHeight() / (worldScale * 2), worldScale);
-		gameContentState.replayManager = new ReplayManager();
+		gameContentState.levelGenerator = levelGenerator;
+		
+		
+		gameContentState.init();
 
 		playGameState.getParameters().put("gameContentState", gameContentState);
 
