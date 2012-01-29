@@ -11,6 +11,7 @@ import uy.globalgamejam.medusa.scripts.RemoveOldEntitiesScript;
 import uy.globalgamejam.medusa.tags.Groups;
 import uy.globalgamejam.medusa.tags.Tags;
 import uy.globalgamejam.medusa.templates.AttachedCameraTemplate;
+import uy.globalgamejam.medusa.templates.WorldLimitsSpawnerTemplate;
 import uy.globalgamejam.medusa.templates.KeyboardControllerTemplate;
 import uy.globalgamejam.medusa.templates.LevelInstantiator;
 import uy.globalgamejam.medusa.templates.ObstacleSpawnerTemplate2;
@@ -19,6 +20,7 @@ import uy.globalgamejam.medusa.templates.SnakeGhostTemplate;
 import uy.globalgamejam.medusa.templates.TailPartTemplate;
 import uy.globalgamejam.medusa.templates.WorldLimitsSpawnerTemplate;
 import uy.globalgamejam.medusa.templates.SnakeCharacterTemplate.DangerScript;
+import uy.globalgamejam.medusa.templates.BackgroundSpawnerTemplate;
 
 import com.artemis.Entity;
 import com.artemis.World;
@@ -60,6 +62,7 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
+import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
@@ -72,12 +75,12 @@ import com.gemserk.componentsengine.utils.ParametersWrapper;
 
 public class PlayGameState extends GameStateImpl {
 
-
 	Injector injector;
 	Game game;
 
 	Libgdx2dCamera worldCamera;
 	Libgdx2dCamera normalCamera;
+	Libgdx2dCamera backgroundCamera;
 
 	WorldWrapper scene;
 
@@ -110,10 +113,14 @@ public class PlayGameState extends GameStateImpl {
 		float worldScale = gameContentState.worldScale;
 		worldCamera.zoom(worldScale);
 
+		backgroundCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() * 0f, Gdx.graphics.getHeight() * 0f);
+		backgroundCamera.zoom(1f);
+
 		worldRealCamera = new CameraImpl(0, 0, worldScale, 0f);
 
 		RenderLayers renderLayers = new RenderLayers();
 
+		renderLayers.add("Background", new RenderLayerSpriteBatchImpl(-5000, -500, backgroundCamera));
 		renderLayers.add("World", new RenderLayerSpriteBatchImpl(-500, 500, worldCamera));
 
 		scene = new WorldWrapper(new World());
@@ -145,9 +152,9 @@ public class PlayGameState extends GameStateImpl {
 		scene.addRenderSystem(new SpriteUpdateSystem(new TimeStepProviderGameStateImpl(this)));
 		scene.addRenderSystem(new CameraUpdateSystem(new TimeStepProviderGameStateImpl(this)));
 
-//		scene.addRenderSystem(new Box2dRenderSystem(worldCamera, physicsWorld));
+		// scene.addRenderSystem(new Box2dRenderSystem(worldCamera, physicsWorld));
 		scene.addRenderSystem(new RenderableSystem(renderLayers));
-		
+
 		scene.init();
 
 		Controller controller = new Controller();
@@ -162,10 +169,10 @@ public class PlayGameState extends GameStateImpl {
 		TailComponent tailComponent = Components.getTailComponent(mainCharacter);
 
 		int tailLength = 50;
-		
+
 		for (int i = 0; i < tailLength; i++) {
 			Entity tailPart = entityFactory.instantiate(injector.getInstance(TailPartTemplate.class), new ParametersWrapper() //
-					.put("spatial", new SpatialImpl(-i-100, y, 1f, 1f, 0f)) //
+					.put("spatial", new SpatialImpl(-i - 100, y, 1f, 1f, 0f)) //
 					.put("owner", mainCharacter) //
 					);
 			tailComponent.parts.add(tailPart);
@@ -186,10 +193,9 @@ public class PlayGameState extends GameStateImpl {
 
 			for (int i = 0; i < tailLength; i++) {
 				Entity tailPart = entityFactory.instantiate(injector.getInstance(TailPartTemplate.class), new ParametersWrapper() //
-						.put("spatial", new SpatialImpl(-i-10, y, 1f, 1f, 0f)) //
+						.put("spatial", new SpatialImpl(-i - 10, y, 1f, 1f, 0f)) //
 						.put("owner", ghostSnake) //
-						.put("deadSnake", true)
-						);
+						.put("deadSnake", true));
 				tailComponent.parts.add(tailPart);
 			}
 
@@ -295,10 +301,9 @@ public class PlayGameState extends GameStateImpl {
 					}
 				}));
 			}
-			
-			
+
 		});
-		
+
 		entityFactory.instantiate(new EntityTemplateImpl() {
 			@Override
 			public void apply(Entity entity) {
@@ -306,14 +311,30 @@ public class PlayGameState extends GameStateImpl {
 					@Override
 					public void update(World world, Entity e) {
 						Entity mainCharacter = world.getTagManager().getEntity(Tags.MainCharacter);
-						
-						score = (long)Components.getSpatialComponent(mainCharacter).getPosition().x;
+
+						score = (long) Components.getSpatialComponent(mainCharacter).getPosition().x;
 
 					}
 				}));
 			}
 		});
-		
+
+		entityFactory.instantiate(new EntityTemplateImpl() {
+			@Override
+			public void apply(Entity entity) {
+				entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
+					@Override
+					public void update(World world, Entity e) {
+						Entity mainCharacter = world.getTagManager().getEntity(Tags.MainCharacter);
+						Spatial spatial = Components.getSpatialComponent(mainCharacter).getSpatial();
+						backgroundCamera.move(spatial.getX() * 5f, 0f);
+					}
+				}));
+			}
+		});
+
+		entityFactory.instantiate(injector.getInstance(BackgroundSpawnerTemplate.class), new ParametersWrapper());
+
 	}
 
 	@Override
@@ -351,7 +372,7 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void render() {
-//		Gdx.gl.glClearColor(1f, 0.5f, 0.0f, 0f);
+		// Gdx.gl.glClearColor(1f, 0.5f, 0.0f, 0f);
 		Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 0f);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 

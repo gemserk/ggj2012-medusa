@@ -34,6 +34,11 @@ public class GameResources extends LibgdxResourceBuilder {
 		
 		public static final String Cabeza = "Cabeza";
 		public static final String Cuerpo = "Cuerpo";
+		
+		public static final String Background01 = "Background01Sprite";
+		public static final String Background02 = "Background02Sprite";
+		public static final String Background03 = "Background03Sprite";
+
 	}
 
 	public static class Animations {
@@ -112,15 +117,19 @@ public class GameResources extends LibgdxResourceBuilder {
 		resource(Sprites.TopBorder, sprite2() //
 				.flip(false, true) //
 				.textureAtlas(TextureAtlases.Images, "border"));
-
 		
 		resource(Sprites.Cabeza, sprite2() //
 				.textureAtlas(TextureAtlases.Images, "cabeza"));
 		
-		
 		resource(Sprites.Cuerpo, sprite2() //
 				.textureAtlas(TextureAtlases.Images, "cuerpo"));
 		
+		resource(Sprites.Background01, sprite2() //
+				.textureAtlas(TextureAtlases.Images, "background-01"));
+		resource(Sprites.Background02, sprite2() //
+				.textureAtlas(TextureAtlases.Images, "background-02"));
+		resource(Sprites.Background03, sprite2() //
+				.textureAtlas(TextureAtlases.Images, "background-03"));
 		
 		// resource(Sprites.Muro1, sprite2() //
 		// .textureAtlas(TextureAtlases.Images, "muro1"));
