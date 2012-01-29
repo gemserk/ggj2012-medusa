@@ -6,6 +6,7 @@ import uy.globalgamejam.medusa.components.Components;
 import uy.globalgamejam.medusa.components.Controller;
 import uy.globalgamejam.medusa.components.Replay;
 import uy.globalgamejam.medusa.components.TailComponent;
+import uy.globalgamejam.medusa.scripts.RemoveOldEntitiesScript;
 import uy.globalgamejam.medusa.tags.Groups;
 import uy.globalgamejam.medusa.tags.Tags;
 import uy.globalgamejam.medusa.templates.AttachedCameraTemplate;
@@ -34,6 +35,7 @@ import com.gemserk.commons.artemis.render.RenderLayers;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.CameraUpdateSystem;
 import com.gemserk.commons.artemis.systems.EventManagerWorldSystem;
+import com.gemserk.commons.artemis.systems.GroupSystem;
 import com.gemserk.commons.artemis.systems.LimitLinearVelocitySystem;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
 import com.gemserk.commons.artemis.systems.ReflectionRegistratorEventSystem;
@@ -128,6 +130,7 @@ public class PlayGameState extends GameStateImpl {
 
 		scene.addUpdateSystem(new ScriptSystem());
 		scene.addUpdateSystem(new TagSystem());
+		scene.addUpdateSystem(new GroupSystem());
 		scene.addUpdateSystem(new ReflectionRegistratorEventSystem(eventManager));
 
 		scene.addUpdateSystem(new PhysicsSystem(physicsWorld));
@@ -214,29 +217,39 @@ public class PlayGameState extends GameStateImpl {
 		entityFactory.instantiate(new EntityTemplateImpl() {
 			@Override
 			public void apply(Entity entity) {
-				entity.addComponent(new ScriptComponent(new ScriptJavaImpl() { 
+				entity.addComponent(new ScriptComponent( //
+						new RemoveOldEntitiesScript(Groups.Enemies, Tags.MainCharacter), //
+						new RemoveOldEntitiesScript(Groups.Obstacles, Tags.MainCharacter) //
+				));
+			}
+		});
+
+		entityFactory.instantiate(new EntityTemplateImpl() {
+			@Override
+			public void apply(Entity entity) {
+				entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
 					@Override
 					public void update(World world, Entity e) {
 						Entity mainCharacter = world.getTagManager().getEntity(Tags.MainCharacter);
 						Contacts contacts = Components.getPhysicsComponent(mainCharacter).getContact();
 						if (!contacts.isInContact())
 							return;
-						
+
 						for (int j = 0; j < contacts.getContactCount(); j++) {
 							Contact contact = contacts.getContact(j);
-							
+
 							Entity entity = (Entity) contact.getOtherFixture().getBody().getUserData();
 							if (entity == null)
 								continue;
-							
+
 							GroupComponent groupComponent = Components.getGroupComponent(entity);
-							
+
 							if (groupComponent == null)
 								continue;
-							
-							if (!Groups.Obstacles.equals(groupComponent.group)) 
+
+							if (!Groups.Obstacles.equals(groupComponent.group))
 								continue;
-							
+
 							Gdx.app.postRunnable(new Runnable() {
 								@Override
 								public void run() {
@@ -246,7 +259,7 @@ public class PlayGameState extends GameStateImpl {
 									gameState.init();
 								}
 							});
-							
+
 							return;
 						}
 					}
