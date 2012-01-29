@@ -13,49 +13,66 @@ import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
+import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.Contacts;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.commons.reflection.Injector;
+import com.gemserk.componentsengine.utils.ParametersWrapper;
 
 public class TailPartTemplate extends EntityTemplateImpl {
 
 	public static class DestroyTailScript extends ScriptJavaImpl {
-		
+
+		EntityFactory entityFactory;
+		Injector injector;
+		private ObstacleTailPartTemplate obstacleTailPartTemplate;
+
+		@Override
+		public void init(World world, Entity e) {
+			obstacleTailPartTemplate = injector.getInstance(ObstacleTailPartTemplate.class);
+		}
+
 		@Override
 		public void update(World world, Entity e) {
 			super.update(world, e);
-			
+
 			PhysicsComponent physicsComponent = Components.getPhysicsComponent(e);
-			
+
 			Contacts contacts = physicsComponent.getContact();
-			
+
 			if (!contacts.isInContact())
 				return;
-			
+
 			TailPartComponent tailPartComponent = Components.getTailPartComponent(e);
 			Entity owner = tailPartComponent.owner;
-			
+
 			TailComponent tailComponent = Components.getTailComponent(owner);
-			
+
 			int indexOf = tailComponent.parts.indexOf(e);
-			
+
 			if (indexOf == -1)
 				return;
-			
-			int i = tailComponent.parts.size()- 1;
-			
+
+			int i = tailComponent.parts.size() - 1;
+
 			while (tailComponent.parts.size() > indexOf) {
 				Entity tailPart = tailComponent.parts.remove(i);
+
+				entityFactory.instantiate(obstacleTailPartTemplate, new ParametersWrapper() //
+						.put("spatial", Components.getSpatialComponent(tailPart).getSpatial()) //
+						);
+
 				i--;
 				tailPart.delete();
+
 			}
-			
+
 			tailComponent.parts.remove(this);
 		}
-		
+
 	}
 
 	BodyBuilder bodyBuilder;
@@ -78,20 +95,19 @@ public class TailPartTemplate extends EntityTemplateImpl {
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.circleShape(0.1f) //
 						.sensor() //
-						.categoryBits(Collisions.Tail)
-						.maskBits((short) (Collisions.Enemy | Collisions.Obstacle)) //
+						.categoryBits(Collisions.Tail).maskBits((short) (Collisions.Enemy | Collisions.Obstacle)) //
 				) //
 				.type(BodyType.DynamicBody) //
 				.position(0f, 0f) //
 				.userData(entity) //
 				.build();
-		
+
 		body.setTransform(spatial.getX(), spatial.getY(), 0f);
 
 		entity.addComponent(new PhysicsComponent(body));
 		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, spatial)));
-		entity.addComponent(new ScriptComponent(new DestroyTailScript()));
-		
+		entity.addComponent(new ScriptComponent(injector.getInstance(DestroyTailScript.class)));
+
 		entity.addComponent(new TailPartComponent(owner));
 	}
 
