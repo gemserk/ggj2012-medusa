@@ -54,7 +54,7 @@ public class LevelGeneratorTemplate {
 		Rectangle oldRectangle = new Rectangle();
 		boolean oldTop = false;
 		while (lastX < distance) {
-			lastX += MathUtils.random(15, 20);
+			lastX += MathUtils.random(10, 20);
 //			lastX += MathUtils.random(3, 3);
 			Element element = new Element();
 			element.xCoord = lastX - GENERATION_BETWEEN_ELEMENTS;
@@ -82,8 +82,12 @@ public class LevelGeneratorTemplate {
 			}
 			
 			Rectangle rectangle = new Rectangle(lastX, y, width, height);
-			if(oldTop != top && rectangle.overlaps(oldRectangle))
-				continue;
+			if(oldTop != top && rectangle.overlaps(oldRectangle)){
+				float correction = MathUtils.random(15,20);
+				rectangle.x +=correction;
+				lastX += correction;
+			}
+			
 			
 			oldTop = top;
 			oldRectangle = rectangle;
