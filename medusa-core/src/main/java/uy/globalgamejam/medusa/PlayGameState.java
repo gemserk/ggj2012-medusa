@@ -274,8 +274,8 @@ public class PlayGameState extends GameStateImpl {
 
 							if (!Groups.Obstacles.equals(groupComponent.group) && !Groups.WorldBounds.equals(groupComponent.group))
 								continue;
-
-							if (Components.getSpatialComponent(mainCharacter).getPosition().x < 0.5f)
+							
+							if(Components.getSpatialComponent(mainCharacter).getPosition().x < 2f)
 								gameContentState.init();
 
 							Gdx.app.postRunnable(new Runnable() {

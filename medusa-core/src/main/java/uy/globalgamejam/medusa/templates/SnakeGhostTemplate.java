@@ -124,6 +124,23 @@ public class SnakeGhostTemplate extends EntityTemplateImpl {
 			float x = FloatInterpolator.interpolate(previousReplayEntry.x, currentReplayEntry.x, t);
 			float y = FloatInterpolator.interpolate(previousReplayEntry.y, currentReplayEntry.y, t);
 
+			
+			
+			SpriteComponent spriteComponent = Components.getSpriteComponent(e);
+			
+			
+			if (!(Math.abs(previousReplayEntry.y- currentReplayEntry.y) < 0.001f)) {
+				if(previousReplayEntry.y < currentReplayEntry.y){
+					spriteComponent.getSprite().setRotation(15);
+				} else {
+					spriteComponent.getSprite().setRotation(-15);
+				}
+			} else {
+				spriteComponent.getSprite().setRotation(0);
+			}
+			
+			
+			
 			spatial.setPosition(x, y);
 
 			time += GlobalTime.getDelta();
@@ -199,7 +216,9 @@ public class SnakeGhostTemplate extends EntityTemplateImpl {
 		Sprite sprite = resourceManager.getResourceValue(Sprites.Cabeza);
 		
 
-		entity.addComponent(new SpriteComponent(sprite, 0.5f, 0.5f, new Color(1, 1, 1, 0.3f)));
+		SpriteComponent spritecomponent = new SpriteComponent(sprite, 0.5f, 0.5f, new Color(1, 1, 1, 0.3f));
+		spritecomponent.setUpdateRotation(false);
+		entity.addComponent(spritecomponent);
 		entity.addComponent(new RenderableComponent(5, true));
 	}
 
