@@ -9,7 +9,6 @@ import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.gemserk.commons.artemis.components.Components;
@@ -39,9 +38,13 @@ public class TopDownEnemyTemplate extends EntityTemplateImpl {
 		float height = 3.25f;
 		boolean movingDown;
 		
+		public TopDownMovementScript(Boolean movingDown) {
+			movingDown = movingDown.booleanValue();
+		}
+
 		@Override
 		public void init(World world, Entity e) {
-			movingDown = MathUtils.randomBoolean();
+
 		}
 		
 		@Override
@@ -83,6 +86,7 @@ public class TopDownEnemyTemplate extends EntityTemplateImpl {
 	@Override
 	public void apply(Entity entity) {
 		Spatial spatial = parameters.get("spatial");
+		Boolean movingDown = parameters.get("movingDown", Boolean.TRUE); 
 
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
@@ -117,7 +121,7 @@ public class TopDownEnemyTemplate extends EntityTemplateImpl {
 
 		entity.addComponent(new LinearVelocityLimitComponent(10f));
 		
-		entity.addComponent(new ScriptComponent(new TopDownMovementScript()));
+		entity.addComponent(new ScriptComponent(new TopDownMovementScript(movingDown)));
 		
 	}
 

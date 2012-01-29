@@ -10,7 +10,6 @@ import uy.globalgamejam.medusa.templates.LevelInstantiator;
 import uy.globalgamejam.medusa.templates.ObstacleSpawnerTemplate2;
 import uy.globalgamejam.medusa.templates.SnakeCharacterTemplate;
 import uy.globalgamejam.medusa.templates.TailPartTemplate;
-import uy.globalgamejam.medusa.templates.enemies.TopDownEnemyTemplate;
 
 import com.artemis.Entity;
 import com.artemis.World;
@@ -22,11 +21,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.gemserk.animation4j.transitions.sync.Synchronizer;
 import com.gemserk.commons.artemis.WorldWrapper;
-import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.render.RenderLayers;
-import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.CameraUpdateSystem;
 import com.gemserk.commons.artemis.systems.EventManagerWorldSystem;
 import com.gemserk.commons.artemis.systems.LimitLinearVelocitySystem;
@@ -39,7 +36,6 @@ import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
-import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
@@ -227,30 +223,32 @@ public class PlayGameState extends GameStateImpl {
 		customDecimalFormat = new CustomDecimalFormat(10);
 		score = 0L;
 
-		entityFactory.instantiate(new EntityTemplateImpl() {
-			@Override
-			public void apply(Entity entity) {
-				entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
-					final Vector2 position = new Vector2();
-
-					@Override
-					public void update(World world, Entity e) {
-						if (!Gdx.input.justTouched())
-							return;
-
-						int x = Gdx.input.getX();
-						int y = Gdx.graphics.getHeight() - Gdx.input.getY();
-
-						position.set(x, y);
-						worldCamera.unproject(position);
-
-						entityFactory.instantiate(injector.getInstance(TopDownEnemyTemplate.class), //
-								new ParametersWrapper().put("spatial", new SpatialImpl(position.x, position.y)) //
-								);
-					}
-				}));
-			}
-		});
+//		entityFactory.instantiate(new EntityTemplateImpl() {
+//			@Override
+//			public void apply(Entity entity) {
+//				entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
+//					final Vector2 position = new Vector2();
+//
+//					@Override
+//					public void update(World world, Entity e) {
+//						if (!Gdx.input.justTouched())
+//							return;
+//
+//						int x = Gdx.input.getX();
+//						int y = Gdx.graphics.getHeight() - Gdx.input.getY();
+//
+//						position.set(x, y);
+//						worldCamera.unproject(position);
+//
+//						entityFactory.instantiate(injector.getInstance(TopDownEnemyTemplate.class), //
+//								new ParametersWrapper()
+//									.put("spatial", new SpatialImpl(position.x, position.y)) //
+//									.put("movingDown", MathUtils.randomBoolean()) //
+//								);
+//					}
+//				}));
+//			}
+//		});
 
 	}
 
