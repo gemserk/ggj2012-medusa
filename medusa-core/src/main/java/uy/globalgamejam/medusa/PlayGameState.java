@@ -5,18 +5,17 @@ import uy.globalgamejam.medusa.components.Components;
 import uy.globalgamejam.medusa.components.Controller;
 import uy.globalgamejam.medusa.components.TailComponent;
 import uy.globalgamejam.medusa.templates.AttachedCameraTemplate;
+import uy.globalgamejam.medusa.templates.KeyboardControllerTemplate;
 import uy.globalgamejam.medusa.templates.LevelInstantiator;
 import uy.globalgamejam.medusa.templates.ObstacleSpawnerTemplate2;
 import uy.globalgamejam.medusa.templates.SnakeCharacterTemplate;
 import uy.globalgamejam.medusa.templates.TailPartTemplate;
-import uy.globalgamejam.medusa.templates.TouchControllerTemplate;
 import uy.globalgamejam.medusa.templates.enemies.TopDownEnemyTemplate;
 
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -74,8 +73,6 @@ public class PlayGameState extends GameStateImpl {
 
 	long score;
 
-	private OrthographicCamera lightingOrhtographicCamera;
-
 	private com.badlogic.gdx.physics.box2d.World physicsWorld;
 	private Camera worldRealCamera;
 
@@ -85,12 +82,12 @@ public class PlayGameState extends GameStateImpl {
 
 		synchronizer = new Synchronizer();
 
-		float gameScale = Gdx.graphics.getHeight() / 1024f;
+		float gameScale = Gdx.graphics.getHeight() / 480f;
 
 		normalCamera = new Libgdx2dCameraTransformImpl(0f, 0f);
 		normalCamera.zoom(1f);
 
-		float scale = 64f;
+		float scale = 24f;
 
 		worldCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() * 0.15f, Gdx.graphics.getHeight() * 0.5f);
 		worldCamera.zoom(scale * gameScale);
@@ -109,8 +106,6 @@ public class PlayGameState extends GameStateImpl {
 		EventManager eventManager = new EventManagerImpl();
 
 		// lighting stuff
-
-		lightingOrhtographicCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		injector.bind("entityFactory", entityFactory);
 		injector.bind("eventManager", eventManager);
@@ -152,9 +147,13 @@ public class PlayGameState extends GameStateImpl {
 			tailComponent.parts.add(tailPart);
 		}
 
-		entityFactory.instantiate(injector.getInstance(TouchControllerTemplate.class), new ParametersWrapper() //
+//		entityFactory.instantiate(injector.getInstance(TouchControllerTemplate.class), new ParametersWrapper() //
+//				.put("controller", controller) //
+//				.put("camera", worldCamera) //
+//				);
+
+		entityFactory.instantiate(injector.getInstance(KeyboardControllerTemplate.class), new ParametersWrapper() //
 				.put("controller", controller) //
-				.put("camera", worldCamera) //
 				);
 
 		// entityFactory.instantiate(injector.getInstance(ItemSpawnerTemplate.class));

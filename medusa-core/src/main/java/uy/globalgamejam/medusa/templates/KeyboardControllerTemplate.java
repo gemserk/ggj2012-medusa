@@ -23,33 +23,33 @@ public class KeyboardControllerTemplate extends EntityTemplateImpl {
 
 	public class KeyboardControllerScript extends ScriptJavaImpl {
 		
+		private ButtonMonitor upButtonMonitor;
 		private ButtonMonitor leftButtonMonitor;
-		private ButtonMonitor rightButtonMonitor;
 		
-		private float desiredX = 0f;
+		private float desiredY = 0f;
 
 		@Override
 		public void init(World world, Entity e) {
-			leftButtonMonitor = LibgdxInputMappingBuilder.keyButtonMonitor(Gdx.input, Keys.LEFT);
-			rightButtonMonitor = LibgdxInputMappingBuilder.keyButtonMonitor(Gdx.input, Keys.RIGHT);
+			upButtonMonitor = LibgdxInputMappingBuilder.keyButtonMonitor(Gdx.input, Keys.UP, Keys.LEFT);
+			leftButtonMonitor = LibgdxInputMappingBuilder.keyButtonMonitor(Gdx.input, Keys.DOWN, Keys.RIGHT);
 		}
 		
 		@Override
 		public void update(World world, Entity e) {
+			upButtonMonitor.update();
 			leftButtonMonitor.update();
-			rightButtonMonitor.update();
 			
 			ControllerComponent controllerComponent = Components.getControllerComponent(e);
 			
-			controllerComponent.controller.desiredY = desiredX;
+			controllerComponent.controller.desiredY = desiredY;
 			
-			float speed = 0.25f;
+			float speed = 0.15f;
+			
+			if (upButtonMonitor.isHolded()) 
+				desiredY += 1f * speed;
 			
 			if (leftButtonMonitor.isHolded()) 
-				desiredX -= 1f * speed;
-			
-			if (rightButtonMonitor.isHolded()) 
-				desiredX += 1f * speed;
+				desiredY -= 1f * speed;
 		}
 
 	}
