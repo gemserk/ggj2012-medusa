@@ -63,6 +63,7 @@ public class SnakeCharacterTemplate extends EntityTemplateImpl {
 		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, spatial)));
 
 		Controller controller = parameters.get("controller");
+		controller.desiredY = spatial.getY();
 		entity.addComponent(new ControllerComponent(controller));
 
 		entity.addComponent(new EngineComponent(10f));

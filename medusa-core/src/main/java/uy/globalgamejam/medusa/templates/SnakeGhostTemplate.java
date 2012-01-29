@@ -161,6 +161,7 @@ public class SnakeGhostTemplate extends EntityTemplateImpl {
 	public void apply(Entity entity) {
 		Spatial spatial = parameters.get("spatial");
 		Replay replay = parameters.get("replay");
+		Float offset = parameters.get("offset", 1f);
 
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
@@ -180,7 +181,7 @@ public class SnakeGhostTemplate extends EntityTemplateImpl {
 
 		entity.addComponent(new ReplayComponent(replay));
 
-		ReplayMovementScript replayMovementScript = new ReplayMovementScript(1f);
+		ReplayMovementScript replayMovementScript = new ReplayMovementScript(offset);
 
 		injector.injectMembers(replayMovementScript);
 

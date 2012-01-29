@@ -26,12 +26,15 @@ public class KeyboardControllerTemplate extends EntityTemplateImpl {
 		private ButtonMonitor upButtonMonitor;
 		private ButtonMonitor leftButtonMonitor;
 		
-		private float desiredY = 0f;
+		private float desiredY;
 
 		@Override
 		public void init(World world, Entity e) {
 			upButtonMonitor = LibgdxInputMappingBuilder.keyButtonMonitor(Gdx.input, Keys.UP, Keys.LEFT);
 			leftButtonMonitor = LibgdxInputMappingBuilder.keyButtonMonitor(Gdx.input, Keys.DOWN, Keys.RIGHT);
+			
+			ControllerComponent controllerComponent = Components.getControllerComponent(e);
+			desiredY = controllerComponent.controller.desiredY;
 		}
 		
 		@Override
@@ -40,7 +43,6 @@ public class KeyboardControllerTemplate extends EntityTemplateImpl {
 			leftButtonMonitor.update();
 			
 			ControllerComponent controllerComponent = Components.getControllerComponent(e);
-			
 			controllerComponent.controller.desiredY = desiredY;
 			
 			float speed = 0.15f;

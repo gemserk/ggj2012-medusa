@@ -24,6 +24,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.animation4j.transitions.sync.Synchronizer;
 import com.gemserk.commons.artemis.WorldWrapper;
@@ -147,8 +148,10 @@ public class PlayGameState extends GameStateImpl {
 
 		Controller controller = new Controller();
 
+		float y = 0f + MathUtils.random(-gameContentState.maxYCoord * 0.75f, gameContentState.maxYCoord * 0.75f);
+		System.out.println("maincharacter.y = " + y);
 		Entity mainCharacter = entityFactory.instantiate(injector.getInstance(SnakeCharacterTemplate.class), new ParametersWrapper() //
-				.put("spatial", new SpatialImpl(0f, 0f, 1f, 1f, 0f)) //
+				.put("spatial", new SpatialImpl(0f, y, 1f, 1f, 0f)) //
 				.put("controller", controller) //
 				);
 
@@ -169,6 +172,7 @@ public class PlayGameState extends GameStateImpl {
 			Entity ghostSnake = entityFactory.instantiate(injector.getInstance(SnakeGhostTemplate.class), new ParametersWrapper() //
 					.put("spatial", new SpatialImpl(0f, 0f, 1f, 1f, 0f)) //
 					.put("replay", replay) //
+					.put("offset", 1f) //
 					);
 
 			tailComponent = Components.getTailComponent(ghostSnake);
