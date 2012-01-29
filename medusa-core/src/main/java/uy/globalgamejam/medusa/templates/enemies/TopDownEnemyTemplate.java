@@ -1,15 +1,21 @@
 package uy.globalgamejam.medusa.templates.enemies;
 
+import java.util.ArrayList;
+
 import uy.globalgamejam.medusa.Collisions;
 import uy.globalgamejam.medusa.components.ItemComponent;
 import uy.globalgamejam.medusa.resources.GameResources;
 import uy.globalgamejam.medusa.tags.Groups;
+
+import aurelienribon.box2deditor.FixtureAtlas;
 
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.commons.artemis.components.AnimationComponent;
@@ -27,6 +33,7 @@ import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
+import com.gemserk.commons.gdx.graphics.ShapeUtils;
 import com.gemserk.commons.reflection.Injector;
 import com.gemserk.resources.ResourceManager;
 
@@ -93,21 +100,45 @@ public class TopDownEnemyTemplate extends EntityTemplateImpl {
 		Boolean movingDown = parameters.get("movingDown", Boolean.TRUE);
 
 		Body body = bodyBuilder //
-				.fixture(bodyBuilder.fixtureDefBuilder() //
-						.categoryBits(Collisions.Enemy) //
-						.maskBits((short) (Collisions.Obstacle)) //
-						.circleShape(0.25f) //
-				) //
-				.fixture(bodyBuilder.fixtureDefBuilder() //
-						.categoryBits(Collisions.Enemy) //
-						.sensor().maskBits((short) (Collisions.MainCharacter | Collisions.Tail)) //
-						.circleShape(0.25f) //
-				) //
 				.position(0f, 0f) //
 				.type(BodyType.DynamicBody) //
 				.angle(0f) //
 				.userData(entity) //
 				.build();
+
+		FixtureAtlas obstaclesFixtureAtlas = resourceManager.getResourceValue(GameResources.FixtureAtlas.Obstacles);
+
+		float width = spatial.getWidth();
+		float height = spatial.getHeight();
+
+		FixtureDef obstacleFixtureDef = bodyBuilder.fixtureDefBuilder() //
+				.categoryBits(Collisions.Enemy) //
+				.maskBits((short) (Collisions.Obstacle | Collisions.Enemy)) //
+				.restitution(0.5f) //
+				.build();
+
+		String fixtureId = parameters.get("fixtureId");
+
+		obstaclesFixtureAtlas.createFixtures(body, fixtureId, width, height, obstacleFixtureDef);
+
+		ArrayList<Fixture> fixtureList = body.getFixtureList();
+
+		Float alignX = parameters.get("alignX",0.5f);
+		Float alignY = parameters.get("alignY",0.5f);
+		
+		
+		obstacleFixtureDef = bodyBuilder.fixtureDefBuilder() //
+				.categoryBits(Collisions.Enemy) //
+				.sensor()
+				.maskBits((short) (Collisions.MainCharacter | Collisions.Tail)) //
+				.build();
+
+
+		obstaclesFixtureAtlas.createFixtures(body, fixtureId, width, height, obstacleFixtureDef);
+
+		fixtureList = body.getFixtureList();
+		
+		ShapeUtils.translateFixtures(fixtureList, -width * alignX, -height * alignY);
 
 		body.setTransform(spatial.getX(), spatial.getY(), spatial.getAngle());
 

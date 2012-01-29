@@ -25,8 +25,11 @@ public class GameResources extends LibgdxResourceBuilder {
 		public static final String Muro2 = "Muro2";
 		public static final String Enemy1 = "Enemigo1";
 		public static final String Enemigo2 = "Enemigo2";
+		public static final String Astronauta = "Astronauta";
+		public static final String Nave = "Nave";
+		public static final String Satelite = "Satelite";
 	}
-	
+
 	public static class Animations {
 		public static final String Enemy1 = "AnimationEnemy1";
 		public static final String Enemy2 = "AnimationEnemy2";
@@ -68,36 +71,40 @@ public class GameResources extends LibgdxResourceBuilder {
 		resource(Sprites.Obstacle1, sprite2() //
 				.textureAtlas(TextureAtlases.Images, "obstacle-02"));
 
-		
-		for(int i=1;i < 8; i++){
+		for (int i = 1; i < 8; i++) {
 			resource("Muro" + i + "a", sprite2() //
 					.textureAtlas(TextureAtlases.Images, "muro" + i + "a"));
-			
+
 			resource("Muro" + i + "b", sprite2() //
 					.textureAtlas(TextureAtlases.Images, "muro" + i + "a").flip(true, false));
 		}
-		
-		
+
 		resource(Sprites.Enemy1, sprite2() //
 				.textureAtlas(TextureAtlases.Images, "enemigo1a"));
-		
+
 		animation(Animations.Enemy1, TextureAtlases.Images, "enemigo1a", true, 200);
 		animation(Animations.Enemy2, TextureAtlases.Images, "enemigo2a", true, 50);
+
+		resource(Sprites.Astronauta, sprite2() //
+				.textureAtlas(TextureAtlases.Images, "extra1a"));
 		
-		resource(Sprites.Enemigo2, sprite2() //
-				.textureAtlas(TextureAtlases.Images, "enemigo2a"));
+		resource(Sprites.Nave, sprite2() //
+				.textureAtlas(TextureAtlases.Images, "extra2a"));
 		
-//		resource(Sprites.Muro1, sprite2() //
-//				.textureAtlas(TextureAtlases.Images, "muro1"));
-//
-//		resource(Sprites.Muro2, sprite2() //
-//				.textureAtlas(TextureAtlases.Images, "muro1").flip(true, false));
+		resource(Sprites.Satelite, sprite2() //
+				.textureAtlas(TextureAtlases.Images, "extra3a"));
 		
+		// resource(Sprites.Muro1, sprite2() //
+		// .textureAtlas(TextureAtlases.Images, "muro1"));
+		//
+		// resource(Sprites.Muro2, sprite2() //
+		// .textureAtlas(TextureAtlases.Images, "muro1").flip(true, false));
+
 		resource(FixtureAtlas.Obstacles, new FixtureAtlasResourceBuilder() //
 				.shapeFile(internal("data/fixtures/figuras")));
-		
-//		resource(FixtureAtlas.Obstacles, new FixtureAtlasResourceBuilder() //
-//				.shapeFile(internal("data/fixtures/obstacles.bin")));
+
+		// resource(FixtureAtlas.Obstacles, new FixtureAtlasResourceBuilder() //
+		// .shapeFile(internal("data/fixtures/obstacles.bin")));
 
 		resource(XmlDocuments.Obstacles, xmlDocument("data/fixtures/obstacles.svg"));
 
