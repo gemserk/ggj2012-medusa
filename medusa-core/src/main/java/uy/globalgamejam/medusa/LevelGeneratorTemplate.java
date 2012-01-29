@@ -39,12 +39,16 @@ public class LevelGeneratorTemplate {
 
 	public Array<Element> generate(float maxYCoord, float worldScale) {
 
+		long iniTime = System.currentTimeMillis();
+		
 		initializeObstacles();
 		float GENERATION_BETWEEN_ELEMENTS = 65;
 
-		float distance = 1000;
+		float distance = 10000;
 		final Array<Element> elements = new Array<Element>();
 
+		Array<Rectangle> boundings = new Array<Rectangle>();
+		
 		float iniX = 10;
 		float lastX = iniX;
 		Rectangle oldRectangle = new Rectangle();
@@ -83,6 +87,7 @@ public class LevelGeneratorTemplate {
 			
 			oldTop = top;
 			oldRectangle = rectangle;
+			boundings.add(rectangle);
 
 			element.parameters = new ParametersWrapper() //
 					.put("spatial", new SpatialImpl(lastX, y, width, height, obstacle.angle)) //
@@ -96,7 +101,7 @@ public class LevelGeneratorTemplate {
 		}
 
 		lastX = iniX;
-		while (lastX < distance) {
+		enemy1: while (lastX < distance) {
 			lastX += MathUtils.random(10, 20);
 			Element element = new Element();
 			element.xCoord = lastX - GENERATION_BETWEEN_ELEMENTS;
@@ -111,8 +116,17 @@ public class LevelGeneratorTemplate {
 			float width = sprite.getWidth() / (worldScale*enemyScale);
 			float height = sprite.getHeight() / (worldScale*enemyScale);
 			
+			
+			float y = MathUtils.random(-maxYCoord, maxYCoord);
+			Rectangle rectangle = new Rectangle(lastX, y, width, height);
+			for (int i = 0; i < boundings.size; i++) {
+				Rectangle bound = boundings.get(i);
+				if(bound.overlaps(rectangle) || bound.contains(rectangle) || rectangle.contains(bound) || rectangle.overlaps(bound))
+					continue enemy1;
+			}
+			
 			element.parameters = new ParametersWrapper() //
-					.put("spatial", new SpatialImpl(lastX, MathUtils.random(-maxYCoord, maxYCoord), width, height, 0))//
+					.put("spatial", new SpatialImpl(lastX, y, width, height, 0))//
 					.put("initialVelocity", new Vector2(1, 0).rotate(MathUtils.random(360)).mul(MathUtils.random(5f)))//
 					.put("animation", animation)//
 					.put("fixtureId", "enemigo1a_1.png") //
@@ -124,7 +138,7 @@ public class LevelGeneratorTemplate {
 		}
 		
 		lastX = iniX;
-		while (lastX < distance) {
+		enemy2: while (lastX < distance) {
 			lastX += MathUtils.random(10, 20);
 			Element element = new Element();
 			element.xCoord = lastX - GENERATION_BETWEEN_ELEMENTS;
@@ -137,8 +151,15 @@ public class LevelGeneratorTemplate {
 			float width = sprite.getWidth() / (worldScale*enemyScale);
 			float height = sprite.getHeight() / (worldScale*enemyScale);
 			
+			float y = MathUtils.random(-maxYCoord, maxYCoord);
+			Rectangle rectangle = new Rectangle(lastX, y, width, height);
+			for (int i = 0; i < boundings.size; i++) {
+				Rectangle bound = boundings.get(i);
+				if(bound.overlaps(rectangle) || bound.contains(rectangle) || rectangle.contains(bound) || rectangle.overlaps(bound))
+					continue enemy2;
+			}
 			element.parameters = new ParametersWrapper() //
-					.put("spatial", new SpatialImpl(lastX, MathUtils.random(-maxYCoord, maxYCoord), width, height, 0))//
+					.put("spatial", new SpatialImpl(lastX, y, width, height, 0))//
 					.put("movingDown", MathUtils.randomBoolean())//
 					.put("animation", animation)//
 					.put("fixtureId", "enemigo2a_1.png") //
@@ -151,7 +172,7 @@ public class LevelGeneratorTemplate {
 		
 		lastX = iniX;
 		String[] extraElements = {Sprites.Astronauta, Sprites.Nave, Sprites.Satelite}; 
-		while (lastX < distance) {
+		extra: while (lastX < distance) {
 			lastX += MathUtils.random(80,120);
 			Element element = new Element();
 			element.xCoord = lastX - GENERATION_BETWEEN_ELEMENTS;
@@ -164,8 +185,15 @@ public class LevelGeneratorTemplate {
 			float width = sprite.getWidth() / (worldScale*enemyScale);
 			float height = sprite.getHeight() / (worldScale*enemyScale);
 			
+			float y = MathUtils.random(-maxYCoord, maxYCoord);
+			Rectangle rectangle = new Rectangle(lastX, y, width, height);
+			for (int i = 0; i < boundings.size; i++) {
+				Rectangle bound = boundings.get(i);
+				if(bound.overlaps(rectangle) || bound.contains(rectangle) || rectangle.contains(bound) || rectangle.overlaps(bound))
+					continue extra;
+			}
 			element.parameters = new ParametersWrapper() //
-					.put("spatial", new SpatialImpl(lastX, MathUtils.random(-maxYCoord, maxYCoord), width, height, 0))//
+					.put("spatial", new SpatialImpl(lastX, y, width, height, 0))//
 					.put("angularVelocity", MathUtils.random(0.1f, 1.0f))//
 					.put("sprite", sprite)//
 
@@ -197,6 +225,9 @@ public class LevelGeneratorTemplate {
 
 			}
 		});
+		
+		System.out.println("TimeToGenerateLevel: " + (System.currentTimeMillis() - iniTime));
+		
 		return elements;
 	}
 

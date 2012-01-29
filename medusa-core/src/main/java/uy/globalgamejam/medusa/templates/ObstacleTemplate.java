@@ -89,6 +89,20 @@ public class ObstacleTemplate extends EntityTemplateImpl {
 
 		entity.addComponent(new SpriteComponent(sprite, alignX, alignY, Color.WHITE));
 		entity.addComponent(new RenderableComponent(-10, true));
+		
+		
+//		Body bodydebug = bodyBuilder.mass(1f) //
+//				.fixture(bodyBuilder.fixtureDefBuilder() //
+//						.sensor()//
+//						.categoryBits(Collisions.Debug) //
+//						.maskBits(Collisions.None) //
+//						.boxShape(spatial.getWidth()/2f, spatial.getHeight()/2f)
+//				) //
+//				.position(spatial.getX(), spatial.getY()) //
+//				.type(BodyType.StaticBody) //
+//				.angle(spatial.getAngle()) //
+//				.userData(null) //
+//				.build();
 	}
 
 }

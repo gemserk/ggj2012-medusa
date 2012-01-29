@@ -18,17 +18,21 @@ import uy.globalgamejam.medusa.templates.SnakeGhostTemplate;
 import uy.globalgamejam.medusa.templates.TailPartTemplate;
 
 import com.artemis.Entity;
+import com.artemis.EntitySystem;
 import com.artemis.World;
+import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.animation4j.transitions.sync.Synchronizer;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.GroupComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
+import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.render.RenderLayers;
@@ -67,6 +71,25 @@ import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 
 public class PlayGameState extends GameStateImpl {
+
+	private final class EntitySystemExtension extends EntitySystem {
+		
+		public EntitySystemExtension() {
+			super(SpatialComponent.class);
+		}
+		
+		@Override
+		protected void processEntities(ImmutableBag<Entity> entities) {
+//			ShapeRenderer shapeRenderer = new ShapeRenderer();
+//			shapeRenderer.
+			
+		}
+
+		@Override
+		protected boolean checkProcessing() {
+			return true;
+		}
+	}
 
 	Injector injector;
 	Game game;
@@ -142,7 +165,9 @@ public class PlayGameState extends GameStateImpl {
 
 		scene.addRenderSystem(new Box2dRenderSystem(worldCamera, physicsWorld));
 		scene.addRenderSystem(new RenderableSystem(renderLayers));
-
+		
+		scene.addRenderSystem(new EntitySystemExtension());
+		
 		scene.init();
 
 		Controller controller = new Controller();
@@ -269,7 +294,32 @@ public class PlayGameState extends GameStateImpl {
 					}
 				}));
 			}
+			
+			
 		});
+		
+		entityFactory.instantiate(new EntityTemplateImpl() {
+			@Override
+			public void apply(Entity entity) {
+				entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
+					@Override
+					public void update(World world, Entity e) {
+						Entity mainCharacter = world.getTagManager().getEntity(Tags.MainCharacter);
+						
+						score = (long)Components.getSpatialComponent(mainCharacter).getPosition().x;
+
+					}
+				}));
+			}
+		});
+		
+		
+					
+
+		
+		
+		
+		
 
 	}
 
