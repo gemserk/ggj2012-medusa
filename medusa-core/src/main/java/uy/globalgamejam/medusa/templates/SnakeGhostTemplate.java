@@ -54,10 +54,18 @@ public class SnakeGhostTemplate extends EntityTemplateImpl {
 		private int currentFrame;
 
 		private boolean finished;
+		
+		public ReplayMovementScript() {
+			this(0f);
+		}
+		
+		public ReplayMovementScript(float offset) {
+			time += offset;
+		}
 
 		@Override
 		public void init(World world, Entity e) {
-			time = 0;
+//			time = 0;
 			finished = false;
 			currentFrame = 0;
 			ReplayComponent replayComponent = e.getComponent(ReplayComponent.class);
@@ -136,7 +144,8 @@ public class SnakeGhostTemplate extends EntityTemplateImpl {
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.circleShape(0.5f) //
-						.maskBits(Collisions.None) //
+						.sensor() //
+						.maskBits(Collisions.All) //
 				) //
 				.type(BodyType.DynamicBody) //
 				.position(spatial.getX(), spatial.getY()) //
@@ -152,7 +161,7 @@ public class SnakeGhostTemplate extends EntityTemplateImpl {
 		entity.addComponent(new ScriptComponent( //
 				injector.getInstance(EatEnemiesScript.class), //
 				injector.getInstance(MoveTailScript.class), //
-				injector.getInstance(ReplayMovementScript.class)));
+				new ReplayMovementScript(1f)));
 
 	}
 

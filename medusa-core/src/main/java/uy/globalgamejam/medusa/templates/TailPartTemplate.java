@@ -79,7 +79,7 @@ public class TailPartTemplate extends EntityTemplateImpl {
 						.circleShape(0.1f) //
 						.sensor() //
 						.categoryBits(Collisions.Tail)
-						.maskBits(Collisions.Enemy) //
+						.maskBits((short) (Collisions.Enemy | Collisions.Obstacle)) //
 				) //
 				.type(BodyType.DynamicBody) //
 				.position(0f, 0f) //

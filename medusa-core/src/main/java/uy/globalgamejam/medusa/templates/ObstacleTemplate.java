@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import uy.globalgamejam.medusa.Collisions;
 import uy.globalgamejam.medusa.resources.GameResources;
+import uy.globalgamejam.medusa.tags.Groups;
 import aurelienribon.box2deditor.FixtureAtlas;
 
 import com.artemis.Entity;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.gemserk.commons.artemis.components.GroupComponent;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
@@ -71,12 +73,14 @@ public class ObstacleTemplate extends EntityTemplateImpl {
 
 		ArrayList<Fixture> fixtureList = body.getFixtureList();
 
-		Float alignX = parameters.get("alignX",0.5f);
-		Float alignY = parameters.get("alignY",0.5f);
-		
+		Float alignX = parameters.get("alignX", 0.5f);
+		Float alignY = parameters.get("alignY", 0.5f);
+
 		ShapeUtils.translateFixtures(fixtureList, -width * alignX, -height * alignY);
 
 		body.setTransform(spatial.getX(), spatial.getY(), spatial.getAngle());
+		
+		entity.addComponent(new GroupComponent(Groups.Obstacles));
 
 		entity.addComponent(new PhysicsComponent(body));
 		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
