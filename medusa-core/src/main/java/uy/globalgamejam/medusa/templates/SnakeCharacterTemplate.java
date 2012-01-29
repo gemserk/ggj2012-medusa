@@ -53,7 +53,7 @@ public class SnakeCharacterTemplate extends EntityTemplateImpl {
 	public void apply(Entity entity) {
 		Spatial spatial = parameters.get("spatial");
 
-		spatial.setSize(2f,2f);
+		spatial.setSize(2.5f,2.5f);
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.circleShape(0.5f) //
@@ -78,7 +78,9 @@ public class SnakeCharacterTemplate extends EntityTemplateImpl {
 		Sprite sprite = resourceManager.getResourceValue(Sprites.Cabeza);
 		
 
-		entity.addComponent(new SpriteComponent(sprite, 0.5f, 0.5f, Color.WHITE));
+		SpriteComponent spriteComponent = new SpriteComponent(sprite, 0.5f, 0.5f, Color.WHITE);
+		spriteComponent.setUpdateRotation(false);
+		entity.addComponent(spriteComponent);
 		entity.addComponent(new RenderableComponent(5, true));
 		
 		

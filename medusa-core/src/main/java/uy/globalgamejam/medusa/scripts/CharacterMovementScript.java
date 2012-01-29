@@ -6,10 +6,12 @@ import uy.globalgamejam.medusa.components.ControllerComponent;
 
 import com.artemis.Entity;
 import com.artemis.World;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
+import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.games.Spatial;
@@ -25,6 +27,17 @@ public class CharacterMovementScript extends ScriptJavaImpl {
 
 		SpatialComponent spatialComponent = Components.getSpatialComponent(e);
 		Spatial spatial = spatialComponent.getSpatial();
+		
+		SpriteComponent spriteComponent = Components.getSpriteComponent(e);
+		if (!(Math.abs(spatial.getY() - controller.desiredY) < 0.001f)) {
+			if(spatial.getY() < controller.desiredY){
+				spriteComponent.getSprite().setRotation(15);
+			} else {
+				spriteComponent.getSprite().setRotation(-15);
+			}
+		} else {
+			spriteComponent.getSprite().setRotation(0);
+		}
 
 		PhysicsComponent physicsComponent = Components.getPhysicsComponent(e);
 		Body body = physicsComponent.getBody();

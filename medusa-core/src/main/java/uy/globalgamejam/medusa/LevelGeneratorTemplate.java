@@ -49,12 +49,12 @@ public class LevelGeneratorTemplate {
 
 		Array<Rectangle> boundings = new Array<Rectangle>();
 		
-		float iniX = 10;
+		float iniX = 20;
 		float lastX = iniX;
 		Rectangle oldRectangle = new Rectangle();
 		boolean oldTop = false;
 		while (lastX < distance) {
-			lastX += MathUtils.random(10, 20);
+			lastX += MathUtils.random(15, 25);
 //			lastX += MathUtils.random(3, 3);
 			Element element = new Element();
 			element.xCoord = lastX - GENERATION_BETWEEN_ELEMENTS;
@@ -83,7 +83,7 @@ public class LevelGeneratorTemplate {
 			
 			Rectangle rectangle = new Rectangle(lastX, y, width, height);
 			if(oldTop != top && rectangle.overlaps(oldRectangle)){
-				float correction = MathUtils.random(15,20);
+				float correction = MathUtils.random(17,20);
 				rectangle.x +=correction;
 				lastX += correction;
 			}
@@ -106,7 +106,7 @@ public class LevelGeneratorTemplate {
 
 		lastX = iniX;
 		enemy1: while (lastX < distance) {
-			lastX += MathUtils.random(10, 20);
+			lastX += MathUtils.random(3, 15);
 			Element element = new Element();
 			element.xCoord = lastX - GENERATION_BETWEEN_ELEMENTS;
 			
@@ -116,7 +116,7 @@ public class LevelGeneratorTemplate {
 			Animation animation = resourceManager.getResourceValue(Animations.Enemy1);
 			Sprite sprite = animation.getCurrentFrame();
 			
-			float enemyScale = 1f;
+			float enemyScale = 1.8f;
 			float width = sprite.getWidth() / (worldScale*enemyScale);
 			float height = sprite.getHeight() / (worldScale*enemyScale);
 			
@@ -143,7 +143,7 @@ public class LevelGeneratorTemplate {
 		
 		lastX = iniX;
 		enemy2: while (lastX < distance) {
-			lastX += MathUtils.random(10, 20);
+			lastX += MathUtils.random(5, 13);
 			Element element = new Element();
 			element.xCoord = lastX - GENERATION_BETWEEN_ELEMENTS;
 			
