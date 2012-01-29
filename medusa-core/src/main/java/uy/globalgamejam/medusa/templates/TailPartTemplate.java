@@ -4,10 +4,12 @@ import uy.globalgamejam.medusa.Collisions;
 import uy.globalgamejam.medusa.components.Components;
 import uy.globalgamejam.medusa.components.TailComponent;
 import uy.globalgamejam.medusa.components.TailPartComponent;
+import uy.globalgamejam.medusa.resources.GameResources;
 import uy.globalgamejam.medusa.resources.GameResources.Sprites;
 
 import com.artemis.Entity;
 import com.artemis.World;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -31,6 +33,8 @@ import com.gemserk.resources.ResourceManager;
 public class TailPartTemplate extends EntityTemplateImpl {
 
 	public static class DestroyTailScript extends ScriptJavaImpl {
+		
+		ResourceManager<String> resourceManager;
 
 		EntityFactory entityFactory;
 		Injector injector;
@@ -80,6 +84,9 @@ public class TailPartTemplate extends EntityTemplateImpl {
 			}
 
 			tailComponent.parts.remove(this);
+			
+			Sound sound = resourceManager.getResourceValue(GameResources.Audio.CorteCola);
+			sound.play();
 		}
 
 	}

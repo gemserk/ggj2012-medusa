@@ -11,21 +11,21 @@ import uy.globalgamejam.medusa.scripts.RemoveOldEntitiesScript;
 import uy.globalgamejam.medusa.tags.Groups;
 import uy.globalgamejam.medusa.tags.Tags;
 import uy.globalgamejam.medusa.templates.AttachedCameraTemplate;
-import uy.globalgamejam.medusa.templates.WorldLimitsSpawnerTemplate;
+import uy.globalgamejam.medusa.templates.BackgroundSpawnerTemplate;
 import uy.globalgamejam.medusa.templates.KeyboardControllerTemplate;
 import uy.globalgamejam.medusa.templates.LevelInstantiator;
 import uy.globalgamejam.medusa.templates.ObstacleSpawnerTemplate2;
 import uy.globalgamejam.medusa.templates.SnakeCharacterTemplate;
+import uy.globalgamejam.medusa.templates.SnakeCharacterTemplate.DangerScript;
 import uy.globalgamejam.medusa.templates.SnakeGhostTemplate;
 import uy.globalgamejam.medusa.templates.TailPartTemplate;
 import uy.globalgamejam.medusa.templates.WorldLimitsSpawnerTemplate;
-import uy.globalgamejam.medusa.templates.SnakeCharacterTemplate.DangerScript;
-import uy.globalgamejam.medusa.templates.BackgroundSpawnerTemplate;
 
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -72,6 +72,7 @@ import com.gemserk.commons.text.CustomDecimalFormat;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
+import com.gemserk.resources.ResourceManager;
 
 public class PlayGameState extends GameStateImpl {
 
@@ -97,6 +98,8 @@ public class PlayGameState extends GameStateImpl {
 	private Camera worldRealCamera;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 	private GameContentState gameContentState;
+	
+	ResourceManager<String> resourceManager;
 
 	@Override
 	public void init() {
@@ -295,6 +298,9 @@ public class PlayGameState extends GameStateImpl {
 									gameState.init();
 								}
 							});
+							
+							Sound sound = resourceManager.getResourceValue(GameResources.Audio.Muerte);
+							sound.play();
 
 							return;
 						}

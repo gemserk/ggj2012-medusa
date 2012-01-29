@@ -64,6 +64,14 @@ public class GameResources extends LibgdxResourceBuilder {
 		
 	}
 
+	public static class Audio {
+		
+		public static final String EatEnemy = "EatEnemySound";
+		public static final String CorteCola = "CorteColaSound";
+		public static final String Muerte = "MuerteSound";
+		
+	}
+
 	/**
 	 * Only creates all resource declarations, it doesn't load all the stuff yet.
 	 */
@@ -146,5 +154,9 @@ public class GameResources extends LibgdxResourceBuilder {
 		resource(XmlDocuments.Obstacles, xmlDocument("data/fixtures/obstacles.svg"));
 
 		music(MusicTracks.Game, "data/audio/game.ogg");
+		
+		sound(GameResources.Audio.EatEnemy, "data/audio/MEDUSAComer.wav");
+		sound(GameResources.Audio.CorteCola, "data/audio/MEDUSACortecola.wav");
+		sound(GameResources.Audio.Muerte, "data/audio/MEDUSAMuerte.wav");
 	}
 }
