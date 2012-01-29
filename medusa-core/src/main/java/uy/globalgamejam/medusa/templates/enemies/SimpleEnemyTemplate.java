@@ -6,23 +6,26 @@ import uy.globalgamejam.medusa.Collisions;
 import uy.globalgamejam.medusa.components.ItemComponent;
 import uy.globalgamejam.medusa.resources.GameResources;
 import uy.globalgamejam.medusa.tags.Groups;
-
 import aurelienribon.box2deditor.FixtureAtlas;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.gemserk.animation4j.gdx.Animation;
+import com.gemserk.commons.artemis.components.AnimationComponent;
 import com.gemserk.commons.artemis.components.GroupComponent;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.RenderableComponent;
+import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
+import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
+import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
@@ -51,8 +54,7 @@ public class SimpleEnemyTemplate extends EntityTemplateImpl {
 	@Override
 	public void apply(Entity entity) {
 		Spatial spatial = parameters.get("spatial");
-		Sprite sprite = parameters.get("sprite");
-		sprite.getWidth();
+		Animation animation = parameters.get("animation");
 		
 		
 		Body body = bodyBuilder //
@@ -125,9 +127,24 @@ public class SimpleEnemyTemplate extends EntityTemplateImpl {
 		
 		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, spatial)));
 
-		entity.addComponent(new SpriteComponent(sprite, 0.5f, 0.5f, Color.WHITE));
+		entity.addComponent(new SpriteComponent(animation.getCurrentFrame(), 0.5f, 0.5f, Color.WHITE));
+		entity.addComponent(new AnimationComponent(new Animation[] { animation }));
+		
 		entity.addComponent(new RenderableComponent(-1, true));
 
+		entity.addComponent(new ScriptComponent( //
+				new ScriptJavaImpl() {
+					public void update(com.artemis.World world, Entity e) {
+						AnimationComponent animationComponent = e.getComponent(AnimationComponent.class);
+						
+						Animation currentAnimation = animationComponent.getCurrentAnimation();
+						currentAnimation.update(GlobalTime.getDelta());
+						
+						SpriteComponent spriteComponent = e.getComponent(SpriteComponent.class);
+						spriteComponent.setSprite(currentAnimation.getCurrentFrame());
+					}
+				}
+		));
 	}
 
 }

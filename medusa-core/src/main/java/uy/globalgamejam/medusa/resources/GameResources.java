@@ -26,6 +26,11 @@ public class GameResources extends LibgdxResourceBuilder {
 		public static final String Enemy1 = "Enemigo1";
 		public static final String Enemigo2 = "Enemigo2";
 	}
+	
+	public static class Animations {
+		public static final String Enemy1 = "AnimationEnemy1";
+		public static final String Enemy2 = "AnimationEnemy2";
+	}
 
 	public static class FixtureAtlas {
 
@@ -76,6 +81,9 @@ public class GameResources extends LibgdxResourceBuilder {
 		resource(Sprites.Enemy1, sprite2() //
 				.textureAtlas(TextureAtlases.Images, "enemigo1a"));
 		
+		animation(Animations.Enemy1, TextureAtlases.Images, "enemigo1a", true, 200);
+		animation(Animations.Enemy2, TextureAtlases.Images, "enemigo2a", true, 50);
+		
 		resource(Sprites.Enemigo2, sprite2() //
 				.textureAtlas(TextureAtlases.Images, "enemigo2a"));
 		
@@ -87,7 +95,7 @@ public class GameResources extends LibgdxResourceBuilder {
 		
 		resource(FixtureAtlas.Obstacles, new FixtureAtlasResourceBuilder() //
 				.shapeFile(internal("data/fixtures/figuras")));
-
+		
 //		resource(FixtureAtlas.Obstacles, new FixtureAtlasResourceBuilder() //
 //				.shapeFile(internal("data/fixtures/obstacles.bin")));
 

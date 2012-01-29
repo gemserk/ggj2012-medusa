@@ -3,6 +3,7 @@ package uy.globalgamejam.medusa;
 import java.util.Comparator;
 
 import uy.globalgamejam.medusa.resources.GameResources;
+import uy.globalgamejam.medusa.resources.GameResources.Animations;
 import uy.globalgamejam.medusa.resources.GameResources.Sprites;
 import uy.globalgamejam.medusa.templates.ItemTemplate;
 import uy.globalgamejam.medusa.templates.ObstacleTemplate;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.math.MathUtils2;
@@ -85,7 +87,10 @@ public class LevelGeneratorTemplate {
 			
 			element.entityTemplate = SimpleEnemyTemplate.class;
 
-			Sprite sprite = resourceManager.getResourceValue(Sprites.Enemy1);
+			
+			Animation animation = resourceManager.getResourceValue(Animations.Enemy1);
+			Sprite sprite = animation.getCurrentFrame();
+			
 			float enemyScale = 1f;
 			float width = sprite.getWidth() / (worldScale*enemyScale);
 			float height = sprite.getHeight() / (worldScale*enemyScale);
@@ -93,8 +98,8 @@ public class LevelGeneratorTemplate {
 			element.parameters = new ParametersWrapper() //
 					.put("spatial", new SpatialImpl(lastX, MathUtils.random(-maxYCoord, maxYCoord), width, height, 0))//
 					.put("initialVelocity", new Vector2(1, 0).rotate(MathUtils.random(360)).mul(MathUtils.random(5f)))//
-					.put("sprite", sprite)//
-					.put("fixtureId", "enemigo1a.png") //
+					.put("animation", animation)//
+					.put("fixtureId", "enemigo1a_1.png") //
 
 			; //
 
@@ -110,7 +115,8 @@ public class LevelGeneratorTemplate {
 			
 			element.entityTemplate = TopDownEnemyTemplate.class;
 
-			Sprite sprite = resourceManager.getResourceValue(Sprites.Enemigo2);
+			Animation animation = resourceManager.getResourceValue(Animations.Enemy2);
+			Sprite sprite = animation.getCurrentFrame();
 			float enemyScale = 1f;
 			float width = sprite.getWidth() / (worldScale*enemyScale);
 			float height = sprite.getHeight() / (worldScale*enemyScale);
@@ -118,8 +124,8 @@ public class LevelGeneratorTemplate {
 			element.parameters = new ParametersWrapper() //
 					.put("spatial", new SpatialImpl(lastX, MathUtils.random(-maxYCoord, maxYCoord), width, height, 0))//
 					.put("movingDown", MathUtils.randomBoolean())//
-					.put("sprite", sprite)//
-					.put("fixtureId", "enemigo2a.png") //
+					.put("animation", animation)//
+					.put("fixtureId", "enemigo2a_1.png") //
 
 			; //
 
