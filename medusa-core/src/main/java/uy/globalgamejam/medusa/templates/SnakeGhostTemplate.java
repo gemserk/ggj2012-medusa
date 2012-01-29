@@ -7,18 +7,23 @@ import uy.globalgamejam.medusa.components.Components;
 import uy.globalgamejam.medusa.components.Replay;
 import uy.globalgamejam.medusa.components.Replay.ReplayEntry;
 import uy.globalgamejam.medusa.components.TailComponent;
+import uy.globalgamejam.medusa.resources.GameResources.Sprites;
 import uy.globalgamejam.medusa.scripts.EatEnemiesScript;
 import uy.globalgamejam.medusa.scripts.MoveTailScript;
 
 import com.artemis.Component;
 import com.artemis.Entity;
 import com.artemis.World;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
+import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
+import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
@@ -160,6 +165,7 @@ public class SnakeGhostTemplate extends EntityTemplateImpl {
 	@Override
 	public void apply(Entity entity) {
 		Spatial spatial = parameters.get("spatial");
+		spatial.setSize(1.5f, 1.5f);
 		Replay replay = parameters.get("replay");
 		Float offset = parameters.get("offset", 1f);
 
@@ -190,6 +196,11 @@ public class SnakeGhostTemplate extends EntityTemplateImpl {
 				injector.getInstance(MoveTailScript.class), //
 				replayMovementScript));
 
+		Sprite sprite = resourceManager.getResourceValue(Sprites.Cabeza);
+		
+
+		entity.addComponent(new SpriteComponent(sprite, 0.5f, 0.5f, Color.WHITE));
+		entity.addComponent(new RenderableComponent(5, true));
 	}
 
 }

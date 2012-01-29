@@ -145,7 +145,7 @@ public class PlayGameState extends GameStateImpl {
 		scene.addRenderSystem(new SpriteUpdateSystem(new TimeStepProviderGameStateImpl(this)));
 		scene.addRenderSystem(new CameraUpdateSystem(new TimeStepProviderGameStateImpl(this)));
 
-		scene.addRenderSystem(new Box2dRenderSystem(worldCamera, physicsWorld));
+//		scene.addRenderSystem(new Box2dRenderSystem(worldCamera, physicsWorld));
 		scene.addRenderSystem(new RenderableSystem(renderLayers));
 		
 		scene.init();

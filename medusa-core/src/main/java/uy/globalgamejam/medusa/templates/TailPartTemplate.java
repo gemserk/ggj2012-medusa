@@ -4,14 +4,19 @@ import uy.globalgamejam.medusa.Collisions;
 import uy.globalgamejam.medusa.components.Components;
 import uy.globalgamejam.medusa.components.TailComponent;
 import uy.globalgamejam.medusa.components.TailPartComponent;
+import uy.globalgamejam.medusa.resources.GameResources.Sprites;
 
 import com.artemis.Entity;
 import com.artemis.World;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
+import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
+import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
@@ -21,6 +26,7 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.commons.reflection.Injector;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
+import com.gemserk.resources.ResourceManager;
 
 public class TailPartTemplate extends EntityTemplateImpl {
 
@@ -80,6 +86,7 @@ public class TailPartTemplate extends EntityTemplateImpl {
 
 	BodyBuilder bodyBuilder;
 	Injector injector;
+	ResourceManager<String> resourceManager;
 
 	public void setInjector(Injector injector) {
 		this.injector = injector;
@@ -92,6 +99,7 @@ public class TailPartTemplate extends EntityTemplateImpl {
 	@Override
 	public void apply(Entity entity) {
 		Spatial spatial = parameters.get("spatial");
+		spatial.setSize(0.7f, 0.7f);
 		Entity owner = parameters.get("owner");
 
 		Body body = bodyBuilder //
@@ -112,6 +120,12 @@ public class TailPartTemplate extends EntityTemplateImpl {
 		entity.addComponent(new ScriptComponent(injector.getInstance(DestroyTailScript.class)));
 
 		entity.addComponent(new TailPartComponent(owner));
+		
+		Sprite sprite = resourceManager.getResourceValue(Sprites.Cuerpo);
+		
+
+		entity.addComponent(new SpriteComponent(sprite, 0.5f, 0.5f, Color.WHITE));
+		entity.addComponent(new RenderableComponent(4, true));
 	}
 
 }
